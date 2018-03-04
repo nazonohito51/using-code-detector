@@ -1,0 +1,30 @@
+{
+  "name": "nazonohito51/unused-code-detector",
+  "description": "Detect line that is not executed in php code.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kawashima",
+      "email": "nazonohito51@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CodeDetector\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.3.3",
+    "ext-xdebug": ">=2.2.0",
+    "phpunit/php-code-coverage": "~2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "config": {
+    "platform": {
+      "php": "5.3.3"
+    }
+  }
+}
