@@ -2,6 +2,8 @@
 namespace CodeDetector;
 
 use CodeDetector\Detector\Driver;
+use CodeDetector\Detector\StorageInterface;
+use CodeDetector\Exceptions\InvalidScopeException;
 
 class Registrar
 {
@@ -10,7 +12,7 @@ class Registrar
      */
     static private $detector;
 
-    private function shutdown()
+    public static function shutdown()
     {
         $data = self::$detector->stop();
 
@@ -19,14 +21,18 @@ class Registrar
         // TODO: save merge data
     }
 
-    public static function registerDefault($id = null)
+    public static function registerDefault($scope, StorageInterface $storage, $id = null)
     {
+        if (!is_dir($scope)) {
+            throw new InvalidScopeException();
+        }
+
         $id = !is_null($id) ? $id : 'test';
-
         $detector = new Detector(new Driver());
-        $detector->start($id);
+        $detector->filter()->addDirectoryToWhitelist($scope);
 
-        register_shutdown_function(array($detector, 'shutdown'));
+        $detector->start($id);
+        register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
 
         self::$detector = $detector;
     }
