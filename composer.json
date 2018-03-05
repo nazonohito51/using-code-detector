@@ -17,10 +17,14 @@
   "require": {
     "php": ">=5.3.3",
     "ext-xdebug": ">=2.2.0",
-    "phpunit/php-code-coverage": "~2"
+    "phpunit/php-code-coverage": "~2",
+    "predis/predis": "~1"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
+  },
+  "suggest": {
+    "predis/predis": "You can use the RedisStorage class instead of implementing StorageInterface yourself."
   },
   "config": {
     "platform": {
