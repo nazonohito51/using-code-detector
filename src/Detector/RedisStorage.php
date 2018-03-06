@@ -16,7 +16,7 @@ class RedisStorage implements StorageInterface
 
     public function __construct($host, $port = 6379, $database = 0)
     {
-        if (!class_exists('\Redis\Client')) {
+        if (!class_exists('\Predis\Client')) {
             throw new UndefinedException();
         }
     }

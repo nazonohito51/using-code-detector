@@ -25,7 +25,7 @@ class Registrar
         $detector = new Detector($coverage, $storage);
         $detector->start($id);
 
-        register_shutdown_function(array('\CodeDetector\Detector', 'shutdown'));
+        register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
 
         self::$detector = $detector;
     }
