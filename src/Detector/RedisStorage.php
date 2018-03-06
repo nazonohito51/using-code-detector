@@ -19,17 +19,18 @@ class RedisStorage implements StorageInterface
         if (!class_exists('\Predis\Client')) {
             throw new UndefinedException();
         }
+
+        $this->host = $host;
+        $this->port = $port;
+        $this->database = $database;
     }
 
     private function driver()
     {
         if (is_null($this->driver)) {
             try {
-                $this->driver = new Client(array(
-                    'host' => $this->host,
-                    'port' => $this->port,
-                    'database' => $this->database
-                ));
+                $this->driver = new Client("tcp://{$this->host}:{$this->port}");
+                $this->driver->select($this->database);
             } catch (PredisException $e) {
                 $exception = new ConnectionException();
                 $exception->setDriverException($e);
