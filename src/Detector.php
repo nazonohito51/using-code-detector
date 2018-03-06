@@ -41,7 +41,7 @@ class Detector
     {
         // if saving data is failed, Detector will only notify, and not throw Exception.
         try {
-            $this->storage->set('CodeDetector', $data);
+            $this->storage->set('CodeDetector', serialize($data));
         } catch (ConnectionException $e) {
             // TODO: notification
         } catch (\Exception $e) {
