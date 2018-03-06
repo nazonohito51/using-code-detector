@@ -1,18 +1,12 @@
 <?php
 namespace CodeDetector;
 
-use CodeDetector\Detector\Driver;
 use CodeDetector\Detector\StorageInterface;
-use CodeDetector\Exceptions\InvalidScopeException;
+use CodeDetector\Exceptions\Storage\ConnectionException;
 use PHP_CodeCoverage;
 
 class Detector
 {
-    /**
-     * @var Detector
-     */
-    static private $instance;
-
     private $coverage;
     private $storage;
 
@@ -22,31 +16,36 @@ class Detector
         $this->storage = $storage;
     }
 
-    public static function shutdown()
+    public function start($id)
     {
-        $instance = self::$instance;
-        $data = $instance->coverage->stop();
-var_dump($data);
-        // TODO: get past data
-        // TODO: merge data
-        // TODO: save merge data
+        $this->coverage->start($id);
     }
 
-    public static function registerDefault($scope, StorageInterface $storage, $id = null)
+    public function stop()
     {
-        if (!is_dir($scope)) {
-            throw new InvalidScopeException();
+        $data = $this->coverage->stop();
+
+//        // TODO: get past data
+//        $past_data = $this->storage->get(self::STORAGE_KEY);
+//
+//        // TODO: merge data
+//        $coverage = new PHP_CodeCoverage();
+//        $coverage->setData($past_data);
+//        // TODO: files in $data is checked by file_exists when merge, also setData...
+//        $this->coverage->merge($coverage);
+
+        $this->saveData($data);
+    }
+
+    public function saveData($data)
+    {
+        // if saving data is failed, Detector will only notify, and not throw Exception.
+        try {
+            $this->storage->set('CodeDetector', $data);
+        } catch (ConnectionException $e) {
+            // TODO: notification
+        } catch (\Exception $e) {
+            // TODO: notification
         }
-
-        $id = !is_null($id) ? $id : 'test';
-
-        $coverage = new PHP_CodeCoverage(new Driver());
-        $coverage->filter()->addDirectoryToWhitelist($scope);
-        $coverage->start($id);
-
-        $instance = new self($coverage, $storage);
-        register_shutdown_function(array('\CodeDetector\Detector', 'shutdown'));
-
-        self::$instance = $instance;
     }
 }
