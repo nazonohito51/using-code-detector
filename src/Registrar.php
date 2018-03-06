@@ -12,15 +12,6 @@ class Registrar
      */
     static private $detector;
 
-    public static function shutdown()
-    {
-        $data = self::$detector->stop();
-
-        // TODO: get past data
-        // TODO: merge data
-        // TODO: save merge data
-    }
-
     public static function registerDefault($scope, StorageInterface $storage, $id = null)
     {
         if (!is_dir($scope)) {
@@ -28,12 +19,32 @@ class Registrar
         }
 
         $id = !is_null($id) ? $id : 'test';
-        $detector = new Detector(new Driver());
-        $detector->filter()->addDirectoryToWhitelist($scope);
 
+        $coverage = new \PHP_CodeCoverage(self::createDriver(), self::createFilter($scope));
+
+        $detector = new Detector($coverage, $storage);
         $detector->start($id);
-        register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
+
+        register_shutdown_function(array('\CodeDetector\Detector', 'shutdown'));
 
         self::$detector = $detector;
+    }
+
+    public static function shutdown()
+    {
+        self::$detector->stop();
+    }
+
+    private static function createDriver()
+    {
+        return new Driver();
+    }
+
+    private static function createFilter($scope)
+    {
+        $filter = new \PHP_CodeCoverage_Filter();
+        $filter->addDirectoryToWhitelist($scope);
+
+        return $filter;
     }
 }
