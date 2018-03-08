@@ -12,17 +12,9 @@ class Registrar
      */
     static private $detector;
 
-    public static function registerDefault($scope, StorageInterface $storage, $id = null)
+    public static function register(Detector $detector, $id = null)
     {
-        if (!is_dir($scope)) {
-            throw new InvalidScopeException();
-        }
-
         $id = !is_null($id) ? $id : 'test';
-
-        $coverage = new \PHP_CodeCoverage(self::createDriver(), self::createFilter($scope));
-
-        $detector = new Detector($coverage, $storage);
         $detector->start($id);
 
         register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
@@ -30,17 +22,31 @@ class Registrar
         self::$detector = $detector;
     }
 
+    public static function registerDefault($scope, StorageInterface $storage, $reposRootRegexp = null, $id = null)
+    {
+        if (!is_dir($scope)) {
+            throw new InvalidScopeException();
+        }
+        $coverage = new \PHP_CodeCoverage(self::createDefaultDriver(), self::createDefaultFilter($scope));
+$reposRootRegexp = '|^/var/www/webistrano/staging/releases/\d+/|';
+        $detector = new Detector($coverage, $storage);
+        if (!is_null($reposRootRegexp)) {
+            $detector->setIgnoreFilePathRegexp($reposRootRegexp);
+        }
+        self::register($detector, $id);
+    }
+
     public static function shutdown()
     {
         self::$detector->stop();
     }
 
-    private static function createDriver()
+    private static function createDefaultDriver()
     {
         return new Driver();
     }
 
-    private static function createFilter($scope)
+    private static function createDefaultFilter($scope)
     {
         $filter = new \PHP_CodeCoverage_Filter();
         $filter->addDirectoryToWhitelist($scope);
