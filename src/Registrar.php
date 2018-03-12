@@ -27,9 +27,8 @@ class Registrar
         if (!is_dir($scope)) {
             throw new InvalidScopeException();
         }
-        $coverage = new \PHP_CodeCoverage(self::createDefaultDriver(), self::createDefaultFilter($scope));
 $reposRootRegexp = '|^/var/www/webistrano/staging/releases/\d+/|';
-        $detector = new Detector($coverage, $storage);
+        $detector = new Detector(self::createDefaultDriver(), $storage);
         if (!is_null($reposRootRegexp)) {
             $detector->setIgnoreFilePathRegexp($reposRootRegexp);
         }

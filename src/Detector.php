@@ -1,23 +1,23 @@
 <?php
 namespace CodeDetector;
 
+use CodeDetector\Detector\Driver;
 use CodeDetector\Detector\StorageInterface;
 use CodeDetector\Exceptions\Storage\ConnectionException;
-use PHP_CodeCoverage;
 
 class Detector
 {
     const STORAGE_KEY_PREFIX = 'CodeDetector';
 
     private $ignoreFilePath;
-    private $coverage;
+    private $driver;
     private $storage;
 
     private $id;
 
-    public function __construct(PHP_CodeCoverage $coverage, StorageInterface $storage)
+    public function __construct(Driver $driver, StorageInterface $storage)
     {
-        $this->coverage = $coverage;
+        $this->driver = $driver;
         $this->storage = $storage;
     }
 
@@ -29,13 +29,13 @@ class Detector
     public function start($id)
     {
         $this->id = $id;
-        $this->coverage->start($id);
+        $this->driver->start();
     }
 
     public function stop()
     {
-        $this->coverage->stop();
-        $coverageData = $this->coverage->getData();
+        $this->driver->stop();
+        $coverageData = $this->driver->stop();
 
         foreach ($coverageData as $file => $lines) {
             // TODO: convert file path
@@ -44,7 +44,7 @@ class Detector
             $pastData = $this->getData($key);
             // TODO: merge data
             foreach ($lines as $line => $execute) {
-                if ($execute == \PHP_CodeCoverage_Driver::LINE_EXECUTED) {
+                if ($execute == Driver::LINE_EXECUTED) {
                     if (empty($pastData[$line]) || !in_array($this->id, $pastData[$line])) {
                         $pastData[$line][] = $this->id;
                     }
