@@ -34,7 +34,6 @@ class Detector
 
     public function stop()
     {
-        $this->driver->stop();
         $coverageData = $this->driver->stop();
 
         foreach ($coverageData as $file => $lines) {
