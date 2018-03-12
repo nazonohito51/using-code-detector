@@ -2,7 +2,7 @@
 namespace CodeDetector\Exceptions;
 
 
-class InvalidScopeException extends \LogicException
+class InvalidScopeException extends CodeDetectorException
 {
     public function __construct()
     {

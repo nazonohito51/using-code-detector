@@ -1,7 +1,9 @@
 <?php
 namespace CodeDetector\Exceptions\Storage;
 
-class UndefinedException extends \LogicException
+use CodeDetector\Exceptions\CodeDetectorException;
+
+class UndefinedException extends CodeDetectorException
 {
     public function __construct()
     {

@@ -1,7 +1,9 @@
 <?php
 namespace CodeDetector\Exceptions\Storage;
 
-class ConnectionException extends \RuntimeException
+use CodeDetector\Exceptions\CodeDetectorException;
+
+class ConnectionException extends CodeDetectorException
 {
     private $driverException;
 
