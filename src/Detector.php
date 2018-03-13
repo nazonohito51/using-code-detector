@@ -70,7 +70,7 @@ class Detector
     {
         try {
             $data = $this->storage->get($key);
-            if (!is_null($data) && empty($data)) {
+            if (!is_null($data) && !empty($data)) {
                 return unserialize($data);
             }
         } catch (ConnectionException $e) {
