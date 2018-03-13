@@ -44,7 +44,7 @@ class RedisStorage implements StorageInterface
     public function get($key)
     {
         try {
-            $this->driver()->get($key);
+            return $this->driver()->get($key);
         } catch (PredisException $e) {
             $exception = new ConnectionException();
             $exception->setDriverException($e);
