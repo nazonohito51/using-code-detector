@@ -14,7 +14,13 @@ class Registrar
 
     public static function register(Detector $detector, $id = null)
     {
-        $id = !is_null($id) ? $id : 'test';
+        if (is_null($id)) {
+            if (isset($_SERVER['SCRIPT_NAME']) && !empty($_SERVER['SCRIPT_NAME'])) {
+                $id = $_SERVER['SCRIPT_NAME'];
+            } else {
+                $id = 'unknown';
+            }
+        }
         $detector->start($id);
 
         register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
