@@ -2,7 +2,7 @@
 namespace CodeDetector\Exceptions;
 
 
-class InvalidScopeException extends CodeDetectorException
+class InvalidFilePathException extends CodeDetectorException
 {
     public function __construct()
     {

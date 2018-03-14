@@ -3,7 +3,7 @@ namespace CodeDetector;
 
 use CodeDetector\Detector\Driver;
 use CodeDetector\Detector\StorageInterface;
-use CodeDetector\Exceptions\InvalidScopeException;
+use CodeDetector\Exceptions\InvalidFilePathException;
 
 class Registrar
 {
@@ -31,7 +31,7 @@ class Registrar
     public static function registerDefault($scope, StorageInterface $storage, $reposRootRegexp = null, $id = null)
     {
         if (!is_dir($scope)) {
-            throw new InvalidScopeException();
+            throw new InvalidFilePathException();
         }
 $reposRootRegexp = '|^/var/www/webistrano/staging/releases/\d+/|';
         $detector = new Detector(self::createDefaultDriver(), $storage);
