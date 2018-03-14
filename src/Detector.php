@@ -93,4 +93,15 @@ class Detector
             // TODO: notification
         }
     }
+
+    public function getAllData()
+    {
+        try {
+            return $this->storage->getAll();
+        } catch (ConnectionException $e) {
+            // TODO: notification
+        } catch (\Exception $e) {
+            // TODO: notification
+        }
+    }
 }
