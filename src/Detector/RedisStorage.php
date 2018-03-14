@@ -41,6 +41,17 @@ class RedisStorage implements StorageInterface
         return $this->driver;
     }
 
+    private function keys($key)
+    {
+        try {
+            return $this->driver()->keys($key);
+        } catch (PredisException $e) {
+            $exception = new ConnectionException();
+            $exception->setDriverException($e);
+            throw $exception;
+        }
+    }
+
     public function get($key)
     {
         try {
@@ -50,6 +61,25 @@ class RedisStorage implements StorageInterface
             $exception->setDriverException($e);
             throw $exception;
         }
+    }
+
+    public function getAll($prefix = null)
+    {
+        $prefix = !is_null($prefix) ? $prefix . '*' : '*';
+        $ret = array();
+
+        try {
+            $keys = $this->driver()->keys($prefix);
+            foreach ($keys as $key) {
+                $ret[$key] = $this->get($key);
+            }
+        } catch (PredisException $e) {
+            $exception = new ConnectionException();
+            $exception->setDriverException($e);
+            throw $exception;
+        }
+
+        return $ret;
     }
 
     public function set($key, $value)

@@ -13,6 +13,13 @@ interface StorageInterface
     public function get($key);
 
     /**
+     * @param $prefix
+     * @return mixed
+     * @throws ConnectionException
+     */
+    public function getAll($prefix = null);
+
+    /**
      * @param string $key
      * @param mixed $value
      * @throws ConnectionException
