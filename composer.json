@@ -21,7 +21,8 @@
     "predis/predis": "~1"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "*",
+    "mockery/mockery": "*"
   },
   "suggest": {
     "predis/predis": "You can use the RedisStorage class instead of implementing StorageInterface yourself."
