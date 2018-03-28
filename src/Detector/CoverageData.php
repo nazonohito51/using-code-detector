@@ -6,39 +6,86 @@ class CoverageData implements \IteratorAggregate
     const STORAGE_KEY_PREFIX = 'CodeDetector';
 
     private $data;
-    private $id;
-    private $ignore_root_dir;
 
-    public function __construct(array $xdebug_coverage_data, $ignore_root_dir, $id = null)
+    private function __construct(array $data)
     {
-        $this->id = $id;
-        $this->ignore_root_dir = substr($ignore_root_dir, -1) == '/' ? $ignore_root_dir : $ignore_root_dir . '/';
-        $this->data = $this->convertXDebug($xdebug_coverage_data);
+        $this->data = $data;
     }
 
-    public static function createFromStorage()
+    public static function createFromStorage(StorageInterface $storage)
     {
-
+        return new self($storage->getAll(self::STORAGE_KEY_PREFIX));
     }
 
-    private function convertXDebug(array $xdebug_coverage_data)
+    public static function createFromXDebug(array $xdebugCoverageData, $ignoreRootDir, $id = null)
     {
+        $ignoreRootDir = substr($ignoreRootDir, -1) == '/' ? $ignoreRootDir : $ignoreRootDir . '/';
         $data = array();
 
-        foreach ($xdebug_coverage_data as $file => $lines) {
-            $key = $this->convertStorageKey($file);
-            $data[$key] = $lines;
+        foreach ($xdebugCoverageData as $file => $lines) {
+            $key = self::convertStorageKey($file, $ignoreRootDir);
+            foreach ($lines as $line => $execute) {
+                if ($execute == Driver::LINE_EXECUTED) {
+                    $data[$key][$line][] = $id;
+                }
+            }
         }
 
-        return $data;
+        return new self($data);
     }
 
-    private function convertStorageKey($path)
+    private static function convertStorageKey($path, $ignore_root_dir)
     {
         $hash = hash_file('md5', $path);
-        $path = str_replace($this->ignore_root_dir, '', $path);
+        $path = str_replace($ignore_root_dir, '', $path);
 
         return self::STORAGE_KEY_PREFIX . ":{$path}:{$hash}";
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function merge(CoverageData $that)
+    {
+        foreach ($that->getData() as $file => $lines) {
+            if (!isset($this->data[$file])) {
+                $this->data[$file] = array();
+            }
+
+            foreach ($lines as $line => $ids) {
+                $this_ids = isset($this->data[$file][$line]) ? $this->data[$file][$line] : array();
+                $this->data[$file][$line] = array_unique(array_merge($this_ids, $ids));
+            }
+        }
+    }
+
+    public function save(StorageInterface $storage)
+    {
+        foreach ($this->getData() as $file => $lines) {
+            $storage->set($file, $lines);
+        }
+    }
+
+    public function getPHP_CodeCoverageData($ignoreRootDir)
+    {
+        $result = array();
+        foreach ($this->getData() as $file => $lines) {
+            $result[$this->convertRealFilePath($file, $ignoreRootDir)] = $lines;
+        }
+
+        return $result;
+    }
+
+    private function convertRealFilePath($storageKey, $ignoreRootDir)
+    {
+        $ignoreRootDir = substr($ignoreRootDir, -1) == '/' ? $ignoreRootDir : $ignoreRootDir . '/';
+        if (preg_match('/^' . self::STORAGE_KEY_PREFIX . ':([^:]+):.*$/', $storageKey, $matches)) {
+            return realpath($ignoreRootDir . $matches[1]);
+        }
+
+        return null;
     }
 
     public function getIterator()
