@@ -18,7 +18,7 @@ class DetectorTest extends TestCase
         $piyo = __DIR__ . '/fixtures/directory/piyo.php';
         $hogeStorageKey = Detector::STORAGE_KEY_PREFIX . ":$hoge:7790190cbd3eba546205c88ce0682472";
         $fugaStorageKey = Detector::STORAGE_KEY_PREFIX . ":$fuga:65ac6a57264dcf93c28bbaf87660fce7";
-        $piyoStorageKey = Detector::STORAGE_KEY_PREFIX . ":$fuga:478de0143325e325388a60c6935981b8";
+        $piyoStorageKey = Detector::STORAGE_KEY_PREFIX . ":$piyo:478de0143325e325388a60c6935981b8";
 
         $driverMock = m::mock('CodeDetector\Detector\Driver');
         $driverMock->shouldReceive('start');

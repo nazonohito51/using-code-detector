@@ -17,13 +17,12 @@ class CoverageData implements \IteratorAggregate
         return new self($storage->getAll(self::STORAGE_KEY_PREFIX));
     }
 
-    public static function createFromXDebug(array $xdebugCoverageData, $ignoreRootDir, $id = null)
+    public static function createFromXDebug(array $xdebugCoverageData, $id = null)
     {
-        $ignoreRootDir = substr($ignoreRootDir, -1) == '/' ? $ignoreRootDir : $ignoreRootDir . '/';
         $data = array();
 
         foreach ($xdebugCoverageData as $file => $lines) {
-            $key = self::convertStorageKey($file, $ignoreRootDir);
+            $key = self::convertStorageKey($file);
             foreach ($lines as $line => $execute) {
                 if ($execute == Driver::LINE_EXECUTED) {
                     $data[$key][$line][] = $id;
@@ -34,10 +33,9 @@ class CoverageData implements \IteratorAggregate
         return new self($data);
     }
 
-    private static function convertStorageKey($path, $ignore_root_dir)
+    private static function convertStorageKey($path)
     {
         $hash = hash_file('md5', $path);
-        $path = str_replace($ignore_root_dir, '', $path);
 
         return self::STORAGE_KEY_PREFIX . ":{$path}:{$hash}";
     }

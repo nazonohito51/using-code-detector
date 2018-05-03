@@ -10,7 +10,6 @@ class Detector
 {
     const STORAGE_KEY_PREFIX = 'CodeDetector';
 
-    private $ignoreFilePath;
     private $driver;
     private $storage;
 
@@ -22,11 +21,6 @@ class Detector
         $this->storage = $storage;
     }
 
-    public function setIgnoreFilePathRegexp($regexp)
-    {
-        $this->ignoreFilePath = $regexp;
-    }
-
     public function start($id)
     {
         $this->id = $id;
@@ -35,7 +29,7 @@ class Detector
 
     public function stop()
     {
-        $data = CoverageData::createFromXDebug($this->driver->stop(), $this->ignoreFilePath, $this->id);
+        $data = CoverageData::createFromXDebug($this->driver->stop(), $this->id);
         $storageData = CoverageData::createFromStorage($this->storage);
         $storageData->merge($data);
         $storageData->save($this->storage);
