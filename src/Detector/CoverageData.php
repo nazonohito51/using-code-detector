@@ -58,6 +58,8 @@ class CoverageData implements \IteratorAggregate
                 $this_ids = isset($this->data[$file][$line]) ? $this->data[$file][$line] : array();
                 $this->data[$file][$line] = array_unique(array_merge($this_ids, $ids));
             }
+
+            ksort($this->data[$file]);
         }
     }
 
