@@ -1,6 +1,8 @@
 <?php
 namespace CodeDetector\Detector;
 
+use Webmozart\PathUtil\Path;
+
 class CoverageData implements \IteratorAggregate
 {
     const STORAGE_KEY_PREFIX = 'CodeDetector';
@@ -17,12 +19,12 @@ class CoverageData implements \IteratorAggregate
         return new self($storage->getAll(self::STORAGE_KEY_PREFIX));
     }
 
-    public static function createFromXDebug(array $xdebugCoverageData, $id = null)
+    public static function createFromXDebug(array $xdebugCoverageData, $rootDir, $id = null)
     {
         $data = array();
 
         foreach ($xdebugCoverageData as $file => $lines) {
-            $key = self::convertStorageKey($file);
+            $key = self::convertStorageKey($file, $rootDir);
             foreach ($lines as $line => $execute) {
                 if ($execute == Driver::LINE_EXECUTED) {
                     $data[$key][$line][] = $id;
@@ -33,11 +35,12 @@ class CoverageData implements \IteratorAggregate
         return new self($data);
     }
 
-    private static function convertStorageKey($path)
+    private static function convertStorageKey($path, $rootDir)
     {
         $hash = hash_file('md5', $path);
+        $relativePath = Path::makeRelative($path, $rootDir);
 
-        return self::STORAGE_KEY_PREFIX . ":{$path}:{$hash}";
+        return self::STORAGE_KEY_PREFIX . ":{$relativePath}:{$hash}";
     }
 
     public function getData()

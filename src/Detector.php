@@ -4,19 +4,27 @@ namespace CodeDetector;
 use CodeDetector\Detector\CoverageData;
 use CodeDetector\Detector\Driver;
 use CodeDetector\Detector\StorageInterface;
+use CodeDetector\Exceptions\InvalidFilePathException;
 use CodeDetector\Exceptions\Storage\ConnectionException;
+use Webmozart\PathUtil\Path;
 
 class Detector
 {
     const STORAGE_KEY_PREFIX = 'CodeDetector';
 
+    private $dir;
     private $driver;
     private $storage;
 
     private $id;
 
-    public function __construct(Driver $driver, StorageInterface $storage)
+    public function __construct($dir, Driver $driver, StorageInterface $storage)
     {
+        if (realpath($dir) === false) {
+            throw new InvalidFilePathException();
+        }
+
+        $this->dir = realpath($dir);
         $this->driver = $driver;
         $this->storage = $storage;
     }
@@ -29,7 +37,7 @@ class Detector
 
     public function stop()
     {
-        $data = CoverageData::createFromXDebug($this->driver->stop(), $this->id);
+        $data = CoverageData::createFromXDebug($this->driver->stop(), $this->dir, $this->id);
         $storageData = CoverageData::createFromStorage($this->storage);
         $storageData->merge($data);
         $storageData->save($this->storage);
