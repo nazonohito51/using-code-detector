@@ -15,16 +15,15 @@ class DetectorTest extends TestCase
 
     public function coverageDataProvider()
     {
-        $fixtures = $this->fixtures();
         return array(
             'only_xdebug' => array(
                 array(
-                    $fixtures['file1']['path'] => array(
+                    $this->fixtures['file1']['path'] => array(
                         1 => 1,
                         2 => 1,
                         3 => 1,
                     ),
-                    $fixtures['file2']['path'] => array(
+                    $this->fixtures['file2']['path'] => array(
                         4 => 1,
                         5 => 1,
                         6 => 1,
@@ -32,44 +31,44 @@ class DetectorTest extends TestCase
                 ),
                 array(),
                 array(
-                    $fixtures['file1']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => array(
                         1 => array(self::ID1),
                         2 => array(self::ID1),
                         3 => array(self::ID1),
                     ),
-                    $fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file2']['storageKey'] => array(
                         4 => array(self::ID1),
                         5 => array(self::ID1),
                         6 => array(self::ID1),
                     ),
-                    $fixtures['file3']['storageKey'] => array(
+                    $this->fixtures['file3']['storageKey'] => array(
                     ),
                 ),
             ),
             'only_storage' => array(
                 array(),
                 array(
-                    $fixtures['file1']['storageKey'] => array(),
-                    $fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => array(),
+                    $this->fixtures['file2']['storageKey'] => array(
                         6 => array(self::ID2),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
                     ),
-                    $fixtures['file3']['storageKey'] => array(
+                    $this->fixtures['file3']['storageKey'] => array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
                     ),
                 ),
                 array(
-                    $fixtures['file1']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => array(
                     ),
-                    $fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file2']['storageKey'] => array(
                         6 => array(self::ID2),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
                     ),
-                    $fixtures['file3']['storageKey'] => array(
+                    $this->fixtures['file3']['storageKey'] => array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
@@ -78,44 +77,44 @@ class DetectorTest extends TestCase
             ),
             'both' => array(
                 array(
-                    $fixtures['file1']['path'] => array(
+                    $this->fixtures['file1']['path'] => array(
                         1 => 1,
                         2 => 1,
                         3 => 1,
                     ),
-                    $fixtures['file2']['path'] => array(
+                    $this->fixtures['file2']['path'] => array(
                         4 => 1,
                         5 => 1,
                         6 => 1,
                     )
                 ),
                 array(
-                    $fixtures['file1']['storageKey'] => array(),
-                    $fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => array(),
+                    $this->fixtures['file2']['storageKey'] => array(
                         6 => array(self::ID2),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
                     ),
-                    $fixtures['file3']['storageKey'] => array(
+                    $this->fixtures['file3']['storageKey'] => array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
                     ),
                 ),
                 array(
-                    $fixtures['file1']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => array(
                         1 => array(self::ID1),
                         2 => array(self::ID1),
                         3 => array(self::ID1),
                     ),
-                    $fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file2']['storageKey'] => array(
                         4 => array(self::ID1),
                         5 => array(self::ID1),
                         6 => array(self::ID2, self::ID1),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
                     ),
-                    $fixtures['file3']['storageKey'] => array(
+                    $this->fixtures['file3']['storageKey'] => array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
@@ -130,17 +129,15 @@ class DetectorTest extends TestCase
      */
     public function testStop($fromXDebug, $fromStorage, $expected)
     {
-        $fixtures = $this->fixtures();
-
         $driverMock = m::mock('CodeDetector\Detector\Driver');
         $driverMock->shouldReceive('start');
         $driverMock->shouldReceive('stop')->andReturn($fromXDebug);
 
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn($fromStorage);
-        $storageMock->shouldReceive('set')->with($fixtures['file1']['storageKey'], $expected[$fixtures['file1']['storageKey']]);
-        $storageMock->shouldReceive('set')->with($fixtures['file2']['storageKey'], $expected[$fixtures['file2']['storageKey']]);
-        $storageMock->shouldReceive('set')->with($fixtures['file3']['storageKey'], $expected[$fixtures['file3']['storageKey']]);
+        $storageMock->shouldReceive('set')->with($this->fixtures['file1']['storageKey'], $expected[$this->fixtures['file1']['storageKey']]);
+        $storageMock->shouldReceive('set')->with($this->fixtures['file2']['storageKey'], $expected[$this->fixtures['file2']['storageKey']]);
+        $storageMock->shouldReceive('set')->with($this->fixtures['file3']['storageKey'], $expected[$this->fixtures['file3']['storageKey']]);
 
         $detector = new Detector($this->reposRootDir(), $driverMock, $storageMock);
         $detector->start(self::ID1);
@@ -149,25 +146,23 @@ class DetectorTest extends TestCase
 
     public function testGetData()
     {
-        $fixtures = $this->fixtures();
-
         $driverMock = m::mock('CodeDetector\Detector\Driver');
 
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn(array(
-            $fixtures['file1']['storageKey'] => array(
+            $this->fixtures['file1']['storageKey'] => array(
                 1 => array(self::ID1),
                 2 => array(self::ID1),
                 3 => array(self::ID1),
             ),
-            $fixtures['file2']['storageKey'] => array(
+            $this->fixtures['file2']['storageKey'] => array(
                 4 => array(self::ID1),
                 5 => array(self::ID1),
                 6 => array(self::ID2, self::ID1),
                 7 => array(self::ID2),
                 8 => array(self::ID2),
             ),
-            $fixtures['file3']['storageKey'] => array(
+            $this->fixtures['file3']['storageKey'] => array(
                 10 => array(self::ID2),
                 11 => array(self::ID2),
                 12 => array(self::ID2),
@@ -184,19 +179,19 @@ class DetectorTest extends TestCase
             1 => array(self::ID1),
             2 => array(self::ID1),
             3 => array(self::ID1),
-        ), $data[$fixtures['file1']['path']]);
+        ), $data[$this->fixtures['file1']['path']]);
         $this->assertEquals(array(
             4 => array(self::ID1),
             5 => array(self::ID1),
             6 => array(self::ID2, self::ID1),
             7 => array(self::ID2),
             8 => array(self::ID2),
-        ), $data[$fixtures['file2']['path']]);
+        ), $data[$this->fixtures['file2']['path']]);
         $this->assertEquals(array(
             10 => array(self::ID2),
             11 => array(self::ID2),
             12 => array(self::ID2),
-        ), $data[$fixtures['file3']['path']]);
+        ), $data[$this->fixtures['file3']['path']]);
         $this->assertArrayNotHasKey('not_exist_file', $data);
     }
 }

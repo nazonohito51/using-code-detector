@@ -3,22 +3,15 @@ namespace CodeDetector;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected function reposRootDir()
-    {
-        return realpath(__DIR__ . '/../');
-    }
+    protected $fixtures;
 
-    protected function fixturesDir()
+    public function __construct($name = null, array $data = array(), $dataName = '')
     {
-        // Under php5.4, expression in default value(for property and constant) is not allowed.
-        return realpath(__DIR__ . '/fixtures');
-    }
+        parent::__construct($name, $data, $dataName);
 
-    protected function fixtures()
-    {
-        // Under php5.4, expression in default value(for property and constant) is not allowed.
         $dir = $this->fixturesDir();
-        return array(
+        // Under php5.4, expression in default value(for property and constant) is not allowed.
+        $this->fixtures = array(
             'file1' => array(
                 'path' => $dir . '/hoge.php',
                 'storageKey' => Detector::STORAGE_KEY_PREFIX . ':tests/fixtures/hoge.php:7790190cbd3eba546205c88ce0682472'
@@ -32,5 +25,15 @@ class TestCase extends \PHPUnit\Framework\TestCase
                 'storageKey' => Detector::STORAGE_KEY_PREFIX . ':tests/fixtures/directory/piyo.php:478de0143325e325388a60c6935981b8'
             )
         );
+    }
+
+    protected function reposRootDir()
+    {
+        return realpath(__DIR__ . '/../');
+    }
+
+    protected function fixturesDir()
+    {
+        return realpath(__DIR__ . '/fixtures');
     }
 }
