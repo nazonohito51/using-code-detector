@@ -1,32 +1,12 @@
 <?php
 namespace CodeDetector;
 
-use PHPUnit\Framework\TestCase;
 use Mockery as m;
 
 class DetectorTest extends TestCase
 {
     const ID1 = 'id1';
     const ID2 = 'id2';
-
-    private function fixtures()
-    {
-        // In php5.3 and php5.4, expression in default value(for property and constant) is not allowed.
-        return array(
-            'file1' => array(
-                'path' => __DIR__ . '/fixtures/hoge.php',
-                'storageKey' => Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/hoge.php:7790190cbd3eba546205c88ce0682472"
-            ),
-            'file2' => array(
-                'path' => __DIR__ . '/fixtures/directory/fuga.php',
-                'storageKey' => Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/directory/fuga.php:65ac6a57264dcf93c28bbaf87660fce7"
-            ),
-            'file3' => array(
-                'path' => __DIR__ . '/fixtures/directory/piyo.php',
-                'storageKey' => Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/directory/piyo.php:478de0143325e325388a60c6935981b8"
-            )
-        );
-    }
 
     public function tearDown()
     {

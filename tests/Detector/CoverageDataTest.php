@@ -1,7 +1,7 @@
 <?php
 namespace CodeDetector\Detector;
 
-use PHPUnit\Framework\TestCase;
+use CodeDetector\TestCase;
 use Mockery as m;
 
 class CoverageDataTest extends TestCase
