@@ -38,6 +38,7 @@ class Detector
     public function stop()
     {
         $data = CoverageData::createFromXDebug($this->driver->stop(), $this->dir, $this->id);
+        // TODO: filter by scope
         $storageData = CoverageData::createFromStorage($this->storage);
         $storageData->merge($data);
         $storageData->save($this->storage);
