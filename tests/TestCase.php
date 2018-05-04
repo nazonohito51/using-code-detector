@@ -3,10 +3,15 @@ namespace CodeDetector;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    protected function reposRootDir()
+    {
+        return realpath(__DIR__ . '/../');
+    }
+
     protected function fixturesDir()
     {
         // Under php5.4, expression in default value(for property and constant) is not allowed.
-        return __DIR__ . '/fixtures';
+        return realpath(__DIR__ . '/fixtures');
     }
 
     protected function fixtures()

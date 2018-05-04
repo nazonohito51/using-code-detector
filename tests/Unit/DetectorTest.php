@@ -142,7 +142,7 @@ class DetectorTest extends TestCase
         $storageMock->shouldReceive('set')->with($fixtures['file2']['storageKey'], $expected[$fixtures['file2']['storageKey']]);
         $storageMock->shouldReceive('set')->with($fixtures['file3']['storageKey'], $expected[$fixtures['file3']['storageKey']]);
 
-        $detector = new Detector(__DIR__ . '/../', $driverMock, $storageMock);
+        $detector = new Detector($this->reposRootDir(), $driverMock, $storageMock);
         $detector->start(self::ID1);
         $detector->stop();
     }
@@ -177,7 +177,7 @@ class DetectorTest extends TestCase
             ),
         ));
 
-        $detector = new Detector(__DIR__ . '/../', $driverMock, $storageMock);
+        $detector = new Detector($this->reposRootDir(), $driverMock, $storageMock);
         $data = $detector->getData();
 
         $this->assertEquals(array(
