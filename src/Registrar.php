@@ -28,15 +28,12 @@ class Registrar
         self::$detector = $detector;
     }
 
-    public static function registerDefault($scope, StorageInterface $storage, $reposRootRegexp = null, $id = null)
+    public static function registerDefault($scope, StorageInterface $storage, $id = null)
     {
         if (!is_dir($scope)) {
             throw new InvalidFilePathException();
         }
-        $detector = new Detector(self::createDefaultDriver(), $storage);
-        if (!is_null($reposRootRegexp)) {
-            $detector->setIgnoreFilePathRegexp($reposRootRegexp);
-        }
+        $detector = new Detector($scope, self::createDefaultDriver(), $storage);
         self::register($detector, $id);
     }
 
@@ -48,13 +45,5 @@ class Registrar
     private static function createDefaultDriver()
     {
         return new Driver();
-    }
-
-    private static function createDefaultFilter($scope)
-    {
-        $filter = new \PHP_CodeCoverage_Filter();
-        $filter->addDirectoryToWhitelist($scope);
-
-        return $filter;
     }
 }
