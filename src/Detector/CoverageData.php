@@ -56,7 +56,7 @@ class CoverageData implements \IteratorAggregate
             }
 
             foreach ($lines as $line => $ids) {
-                $this_ids = isset($this->data[$file][$line]) ? $this->data[$file][$line] : array();
+                $this_ids = (isset($this->data[$file][$line]) && !empty($this->data[$file][$line])) ? $this->data[$file][$line] : array();
                 $this->data[$file][$line] = array_unique(array_merge($this_ids, $ids));
             }
 
@@ -67,7 +67,9 @@ class CoverageData implements \IteratorAggregate
     public function save(StorageInterface $storage)
     {
         foreach ($this->getData() as $file => $lines) {
-            $storage->set($file, $lines);
+            if (!empty($lines)) {
+                $storage->set($file, $lines);
+            }
         }
     }
 

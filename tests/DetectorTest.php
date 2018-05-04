@@ -6,68 +6,164 @@ use Mockery as m;
 
 class DetectorTest extends TestCase
 {
+    const ID1 = 'id1';
+    const ID2 = 'id2';
+
+    private function fixtures()
+    {
+        // In php5.3 and php5.4, expression in default value(for property and constant) is not allowed.
+        return array(
+            'file1' => array(
+                'path' => __DIR__ . '/fixtures/hoge.php',
+                'storageKey' => Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/hoge.php:7790190cbd3eba546205c88ce0682472"
+            ),
+            'file2' => array(
+                'path' => __DIR__ . '/fixtures/directory/fuga.php',
+                'storageKey' => Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/directory/fuga.php:65ac6a57264dcf93c28bbaf87660fce7"
+            ),
+            'file3' => array(
+                'path' => __DIR__ . '/fixtures/directory/piyo.php',
+                'storageKey' => Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/directory/piyo.php:478de0143325e325388a60c6935981b8"
+            )
+        );
+    }
+
     public function tearDown()
     {
         m::close();
     }
 
-    public function testStop()
+    public function storageDataProvider()
     {
-        $hoge = __DIR__ . '/fixtures/hoge.php';
-        $fuga = __DIR__ . '/fixtures/directory/fuga.php';
-        $piyo = __DIR__ . '/fixtures/directory/piyo.php';
-        $hogeStorageKey = Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/hoge.php:7790190cbd3eba546205c88ce0682472";
-        $fugaStorageKey = Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/directory/fuga.php:65ac6a57264dcf93c28bbaf87660fce7";
-        $piyoStorageKey = Detector::STORAGE_KEY_PREFIX . ":tests/fixtures/directory/piyo.php:478de0143325e325388a60c6935981b8";
+        $fixtures = $this->fixtures();
+        return array(
+            'only_xdebug' => array(
+                array(
+                    $fixtures['file1']['path'] => array(
+                        1 => 1,
+                        2 => 1,
+                        3 => 1,
+                    ),
+                    $fixtures['file2']['path'] => array(
+                        4 => 1,
+                        5 => 1,
+                        6 => 1,
+                    )
+                ),
+                array(),
+                array(
+                    $fixtures['file1']['path'] => array(
+                        1 => array(self::ID1),
+                        2 => array(self::ID1),
+                        3 => array(self::ID1),
+                    ),
+                    $fixtures['file2']['path'] => array(
+                        4 => array(self::ID1),
+                        5 => array(self::ID1),
+                        6 => array(self::ID1),
+                    ),
+                    $fixtures['file3']['path'] => array(
+                    ),
+                ),
+            ),
+            'only_storage' => array(
+                array(),
+                array(
+                    $fixtures['file1']['storageKey'] => array(),
+                    $fixtures['file2']['storageKey'] => array(
+                        6 => array(self::ID2),
+                        7 => array(self::ID2),
+                        8 => array(self::ID2),
+                    ),
+                    $fixtures['file3']['storageKey'] => array(
+                        10 => array(self::ID2),
+                        11 => array(self::ID2),
+                        12 => array(self::ID2),
+                    ),
+                ),
+                array(
+                    $fixtures['file1']['path'] => array(
+                    ),
+                    $fixtures['file2']['path'] => array(
+                        6 => array(self::ID2),
+                        7 => array(self::ID2),
+                        8 => array(self::ID2),
+                    ),
+                    $fixtures['file3']['path'] => array(
+                        10 => array(self::ID2),
+                        11 => array(self::ID2),
+                        12 => array(self::ID2),
+                    ),
+                ),
+            ),
+            'both' => array(
+                array(
+                    $fixtures['file1']['path'] => array(
+                        1 => 1,
+                        2 => 1,
+                        3 => 1,
+                    ),
+                    $fixtures['file2']['path'] => array(
+                        4 => 1,
+                        5 => 1,
+                        6 => 1,
+                    )
+                ),
+                array(
+                    $fixtures['file1']['storageKey'] => array(),
+                    $fixtures['file2']['storageKey'] => array(
+                        6 => array(self::ID2),
+                        7 => array(self::ID2),
+                        8 => array(self::ID2),
+                    ),
+                    $fixtures['file3']['storageKey'] => array(
+                        10 => array(self::ID2),
+                        11 => array(self::ID2),
+                        12 => array(self::ID2),
+                    ),
+                ),
+                array(
+                    $fixtures['file1']['path'] => array(
+                        1 => array(self::ID1),
+                        2 => array(self::ID1),
+                        3 => array(self::ID1),
+                    ),
+                    $fixtures['file2']['path'] => array(
+                        4 => array(self::ID1),
+                        5 => array(self::ID1),
+                        6 => array(self::ID2, self::ID1),
+                        7 => array(self::ID2),
+                        8 => array(self::ID2),
+                    ),
+                    $fixtures['file3']['path'] => array(
+                        10 => array(self::ID2),
+                        11 => array(self::ID2),
+                        12 => array(self::ID2),
+                    ),
+                ),
+            )
+        );
+    }
+
+    /**
+     * @dataProvider storageDataProvider
+     */
+    public function testStop($fromXDebug, $fromStorage, $expected)
+    {
+        $fixtures = $this->fixtures();
 
         $driverMock = m::mock('CodeDetector\Detector\Driver');
         $driverMock->shouldReceive('start');
-        $driverMock->shouldReceive('stop')->andReturn(array(
-            $hoge => array(
-                1 => 1,
-                2 => 1,
-                3 => 1,
-            ),
-            $fuga => array(
-                4 => 1,
-                5 => 1,
-                6 => 1,
-            )
-        ));
+        $driverMock->shouldReceive('stop')->andReturn($fromXDebug);
 
         $storageMock = m::mock('CodeDetector\Detector\StorageInterface');
-        $storageMock->shouldReceive('getAll')->andReturn(array(
-            $fugaStorageKey => array(
-                6 => array('id2'),
-                7 => array('id2'),
-                8 => array('id2'),
-            ),
-            $piyoStorageKey => array(
-                10 => array('id2'),
-                11 => array('id2'),
-                12 => array('id2'),
-            )
-        ));
-        $storageMock->shouldReceive('set')->with($hogeStorageKey, array(
-            1 => array('id1'),
-            2 => array('id1'),
-            3 => array('id1'),
-        ));
-        $storageMock->shouldReceive('set')->with($fugaStorageKey, array(
-            4 => array('id1'),
-            5 => array('id1'),
-            6 => array('id2', 'id1'),
-            7 => array('id2'),
-            8 => array('id2'),
-        ));
-        $storageMock->shouldReceive('set')->with($piyoStorageKey, array(
-            10 => array('id2'),
-            11 => array('id2'),
-            12 => array('id2'),
-        ));
+        $storageMock->shouldReceive('getAll')->andReturn($fromStorage);
+        $storageMock->shouldReceive('set')->with($fixtures['file1']['storageKey'], $expected[$fixtures['file1']['path']]);
+        $storageMock->shouldReceive('set')->with($fixtures['file2']['storageKey'], $expected[$fixtures['file2']['path']]);
+        $storageMock->shouldReceive('set')->with($fixtures['file3']['storageKey'], $expected[$fixtures['file3']['path']]);
 
         $detector = new Detector(__DIR__ . '/../', $driverMock, $storageMock);
-        $detector->start('id1');
+        $detector->start(self::ID1);
         $detector->stop();
     }
 }
