@@ -33,7 +33,7 @@ class DetectorTest extends TestCase
         m::close();
     }
 
-    public function storageDataProvider()
+    public function coverageDataProvider()
     {
         $fixtures = $this->fixtures();
         return array(
@@ -122,6 +122,7 @@ class DetectorTest extends TestCase
                         12 => array(self::ID2),
                     ),
                 ),
+                // TODO: expected is storageKey
                 array(
                     $fixtures['file1']['path'] => array(
                         1 => array(self::ID1),
@@ -146,7 +147,7 @@ class DetectorTest extends TestCase
     }
 
     /**
-     * @dataProvider storageDataProvider
+     * @dataProvider coverageDataProvider
      */
     public function testStop($fromXDebug, $fromStorage, $expected)
     {
@@ -165,5 +166,54 @@ class DetectorTest extends TestCase
         $detector = new Detector(__DIR__ . '/../', $driverMock, $storageMock);
         $detector->start(self::ID1);
         $detector->stop();
+    }
+    
+    public function testGetData()
+    {
+        $fixtures = $this->fixtures();
+
+        $driverMock = m::mock('CodeDetector\Detector\Driver');
+
+        $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
+        $storageMock->shouldReceive('getAll')->andReturn(array(
+            $fixtures['file1']['storageKey'] => array(
+                1 => array(self::ID1),
+                2 => array(self::ID1),
+                3 => array(self::ID1),
+            ),
+            $fixtures['file2']['storageKey'] => array(
+                4 => array(self::ID1),
+                5 => array(self::ID1),
+                6 => array(self::ID2, self::ID1),
+                7 => array(self::ID2),
+                8 => array(self::ID2),
+            ),
+            $fixtures['file3']['storageKey'] => array(
+                10 => array(self::ID2),
+                11 => array(self::ID2),
+                12 => array(self::ID2),
+            ),
+        ));
+
+        $detector = new Detector(__DIR__ . '/../', $driverMock, $storageMock);
+        $data = $detector->getData();
+
+        $this->assertEquals(array(
+            1 => array(self::ID1),
+            2 => array(self::ID1),
+            3 => array(self::ID1),
+        ), $data[$fixtures['file1']['path']]);
+        $this->assertEquals(array(
+            4 => array(self::ID1),
+            5 => array(self::ID1),
+            6 => array(self::ID2, self::ID1),
+            7 => array(self::ID2),
+            8 => array(self::ID2),
+        ), $data[$fixtures['file2']['path']]);
+        $this->assertEquals(array(
+            10 => array(self::ID2),
+            11 => array(self::ID2),
+            12 => array(self::ID2),
+        ), $data[$fixtures['file3']['path']]);
     }
 }

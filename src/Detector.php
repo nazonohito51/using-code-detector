@@ -61,6 +61,12 @@ class Detector
 //        }
     }
 
+    public function getData()
+    {
+        $storageData = CoverageData::createFromStorage($this->storage);
+        return $storageData->getPHP_CodeCoverageData($this->dir);
+    }
+
 //    private function convertStorageKey($path)
 //    {
 //        $hash = hash_file('md5', $path);

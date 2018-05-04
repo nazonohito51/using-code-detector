@@ -74,21 +74,23 @@ class CoverageData implements \IteratorAggregate
         }
     }
 
-    public function getPHP_CodeCoverageData($ignoreRootDir)
+    public function getPHP_CodeCoverageData($rootDir)
     {
         $result = array();
         foreach ($this->getData() as $file => $lines) {
-            $result[$this->convertRealFilePath($file, $ignoreRootDir)] = $lines;
+            $result[$this->convertRealFilePath($file, $rootDir)] = $lines;
         }
 
         return $result;
     }
 
-    private function convertRealFilePath($storageKey, $ignoreRootDir)
+    private function convertRealFilePath($storageKey, $rootDir)
     {
-        $ignoreRootDir = substr($ignoreRootDir, -1) == '/' ? $ignoreRootDir : $ignoreRootDir . '/';
+        $rootDir = substr($rootDir, -1) == '/' ? $rootDir : $rootDir . '/';
         if (preg_match('/^' . self::STORAGE_KEY_PREFIX . ':([^:]+):.*$/', $storageKey, $matches)) {
-            return realpath($ignoreRootDir . $matches[1]);
+            if (file_exists(Path::makeAbsolute($matches[1], $rootDir))) {
+                return Path::makeAbsolute($matches[1], $rootDir);
+            }
         }
 
         return null;
