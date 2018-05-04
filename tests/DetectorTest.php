@@ -5,8 +5,8 @@ use Mockery as m;
 
 class DetectorTest extends TestCase
 {
-    const ID1 = 'id1';
-    const ID2 = 'id2';
+    const ID1 = 'fromXDebug';
+    const ID2 = 'fromStorage';
 
     public function tearDown()
     {
