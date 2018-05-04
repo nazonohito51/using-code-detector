@@ -192,6 +192,9 @@ class DetectorTest extends TestCase
                 11 => array(self::ID2),
                 12 => array(self::ID2),
             ),
+            'not_exist_file' => array(
+                1 => array(self::ID1),
+            ),
         ));
 
         $detector = new Detector(__DIR__ . '/../', $driverMock, $storageMock);
@@ -214,5 +217,6 @@ class DetectorTest extends TestCase
             11 => array(self::ID2),
             12 => array(self::ID2),
         ), $data[$fixtures['file3']['path']]);
+        $this->assertArrayNotHasKey('not_exist_file', $data);
     }
 }
