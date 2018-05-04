@@ -3,7 +3,7 @@ namespace CodeDetector;
 
 use CodeDetector\Detector\CoverageData;
 use CodeDetector\Detector\Driver;
-use CodeDetector\Detector\StorageInterface;
+use CodeDetector\Detector\Storage\StorageInterface;
 use CodeDetector\Exceptions\InvalidFilePathException;
 use CodeDetector\Exceptions\Storage\ConnectionException;
 use Webmozart\PathUtil\Path;

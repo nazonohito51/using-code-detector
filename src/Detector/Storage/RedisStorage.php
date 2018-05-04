@@ -1,6 +1,7 @@
 <?php
-namespace CodeDetector\Detector;
+namespace CodeDetector\Detector\Storage;
 
+use CodeDetector\Detector\Storage\StorageInterface;
 use CodeDetector\Exceptions\Storage\ConnectionException;
 use CodeDetector\Exceptions\Storage\UndefinedException;
 use Predis\Client;

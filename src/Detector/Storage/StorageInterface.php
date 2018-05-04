@@ -1,5 +1,5 @@
 <?php
-namespace CodeDetector\Detector;
+namespace CodeDetector\Detector\Storage;
 
 use CodeDetector\Exceptions\Storage\ConnectionException;
 

@@ -187,7 +187,7 @@ class CoverageDataTest extends TestCase
     private function getStorageMock()
     {
         $id = self::ID_FROM_STORAGE;
-        $storage = m::mock('CodeDetector\Detector\StorageInterface');
+        $storage = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storage->shouldReceive('getAll')->andReturn(array(
             CoverageData::STORAGE_KEY_PREFIX . ':hoge.php:7790190cbd3eba546205c88ce0682472' => array(
                 3 => array($id),

@@ -2,7 +2,7 @@
 namespace CodeDetector;
 
 use CodeDetector\Detector\Driver;
-use CodeDetector\Detector\StorageInterface;
+use CodeDetector\Detector\Storage\StorageInterface;
 use CodeDetector\Exceptions\InvalidFilePathException;
 
 class Registrar

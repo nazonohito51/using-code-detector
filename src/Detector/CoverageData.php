@@ -1,6 +1,7 @@
 <?php
 namespace CodeDetector\Detector;
 
+use CodeDetector\Detector\Storage\StorageInterface;
 use Webmozart\PathUtil\Path;
 
 class CoverageData implements \IteratorAggregate

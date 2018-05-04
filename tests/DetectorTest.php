@@ -156,7 +156,7 @@ class DetectorTest extends TestCase
         $driverMock->shouldReceive('start');
         $driverMock->shouldReceive('stop')->andReturn($fromXDebug);
 
-        $storageMock = m::mock('CodeDetector\Detector\StorageInterface');
+        $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn($fromStorage);
         $storageMock->shouldReceive('set')->with($fixtures['file1']['storageKey'], $expected[$fixtures['file1']['path']]);
         $storageMock->shouldReceive('set')->with($fixtures['file2']['storageKey'], $expected[$fixtures['file2']['path']]);
