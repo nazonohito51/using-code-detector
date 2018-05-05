@@ -14,32 +14,58 @@ class Registrar
 
     public static function register(Detector $detector, $id = null)
     {
-        if (is_null($id)) {
-            if (isset($_SERVER['SCRIPT_NAME']) && !empty($_SERVER['SCRIPT_NAME'])) {
-                $id = $_SERVER['SCRIPT_NAME'];
-            } else {
-                $id = 'unknown';
+        try {
+            if (is_null($id)) {
+                if (isset($_SERVER['SCRIPT_NAME']) && !empty($_SERVER['SCRIPT_NAME'])) {
+                    $id = $_SERVER['SCRIPT_NAME'];
+                } else {
+                    $id = 'unknown';
+                }
             }
+            $detector->start($id);
+
+            register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
+
+            self::$detector = $detector;
+        } catch (\Exception $e) {
+            // logging
         }
-        $detector->start($id);
-
-        register_shutdown_function(array('\CodeDetector\Registrar', 'shutdown'));
-
-        self::$detector = $detector;
     }
 
-    public static function registerDefault($scope, StorageInterface $storage, $id = null)
+    public static function registerDefault($scope, StorageInterface $storage)
     {
         if (!is_dir($scope)) {
             throw new InvalidFilePathException();
         }
         $detector = new Detector($scope, self::createDefaultDriver(), $storage);
-        self::register($detector, $id);
+        self::register($detector);
     }
 
     public static function shutdown()
     {
-        self::$detector->stop();
+        if (self::$detector instanceof Detector) {
+            try {
+                self::$detector->stop();
+            } catch (\Exception $e) {
+                // logging
+            }
+        }
+    }
+
+    public static function report($scope, StorageInterface $storage, $destPath)
+    {
+        if (!is_dir($destPath)) {
+            throw new InvalidFilePathException();
+        }
+
+        $detector = new Detector($scope, self::createDefaultDriver(), $storage);
+        $php_CodeCoverageData = $detector->getData();
+
+        $coverage = new \PHP_CodeCoverage();
+        $coverage->setData($php_CodeCoverageData);
+
+        $writer = new \PHP_CodeCoverage_Report_HTML();
+        $writer->process($coverage, $destPath);
     }
 
     private static function createDefaultDriver()
