@@ -1,6 +1,7 @@
 <?php
 namespace CodeDetector\Detector;
 
+use CodeDetector\Detector\CoverageData\File;
 use CodeDetector\TestCase;
 use Mockery as m;
 
@@ -195,7 +196,10 @@ class CoverageDataTest extends TestCase
                 12 => array(self::ID_FROM_STORAGE),
                 13 => array(self::ID_FROM_STORAGE),
                 14 => array(self::ID_FROM_STORAGE),
-            ))
+            )),
+            File::STORAGE_KEY_PREFIX . ':not_exist:file' => serialize(array(
+                1 => array(self::ID_FROM_STORAGE),
+            )),
         ));
 
         return $storage;

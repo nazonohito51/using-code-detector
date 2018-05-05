@@ -20,6 +20,11 @@ class CoverageData implements \IteratorAggregate
     public static function createFromStorage(StorageInterface $storage, $rootDir)
     {
         $files = File::buildCollectionFromStorage($storage, $rootDir);
+        foreach ($files as $path => $file) {
+            if (!$file->isExist()) {
+                unset($files[$path]);
+            }
+        }
         return new self($files);
     }
 
