@@ -28,56 +28,56 @@ class CoverageDataTest extends TestCase
             1 => array(self::ID_FROM_XDEBUG),
             2 => array(self::ID_FROM_XDEBUG),
             3 => array(self::ID_FROM_XDEBUG),
-        ), $data[$this->fixtures['file1']['storageKey']]);
+        ), $data[$this->fixtures['file1']['path']]->getCoverage());
         $this->assertEquals(array(
             10 => array(self::ID_FROM_XDEBUG),
             11 => array(self::ID_FROM_XDEBUG),
             12 => array(self::ID_FROM_XDEBUG),
             13 => array(self::ID_FROM_XDEBUG),
             14 => array(self::ID_FROM_XDEBUG),
-        ), $data[$this->fixtures['file2']['storageKey']]);
+        ), $data[$this->fixtures['file2']['path']]->getCoverage());
     }
 
     public function testCreateFromXDebug()
     {
         $coverageData = CoverageData::createFromXDebug($this->getXDebugCoverageDataMock(), $this->reposRootDir(), self::ID_FROM_XDEBUG);
-        $data = $coverageData->getData();
+        $data = $coverageData->getFiles();
 
         $this->assertCount(2, $data);
         $this->assertEquals(array(
             1 => array(self::ID_FROM_XDEBUG),
             2 => array(self::ID_FROM_XDEBUG),
             3 => array(self::ID_FROM_XDEBUG),
-        ), $data[$this->fixtures['file1']['storageKey']]);
+        ), $data[$this->fixtures['file1']['path']]->getCoverage());
         $this->assertEquals(array(
             10 => array(self::ID_FROM_XDEBUG),
             11 => array(self::ID_FROM_XDEBUG),
             12 => array(self::ID_FROM_XDEBUG),
             13 => array(self::ID_FROM_XDEBUG),
             14 => array(self::ID_FROM_XDEBUG),
-        ), $data[$this->fixtures['file2']['storageKey']]);
+        ), $data[$this->fixtures['file2']['path']]->getCoverage());
 
         return $coverageData;
     }
 
     public function testCreateFromStorage()
     {
-        $coverageData = CoverageData::createFromStorage($this->getStorageMock());
-        $data = $coverageData->getData();
+        $coverageData = CoverageData::createFromStorage($this->getStorageMock(), $this->reposRootDir());
+        $data = $coverageData->getFiles();
 
         $this->assertCount(2, $data);
         $this->assertEquals(array(
             3 => array(self::ID_FROM_STORAGE),
             4 => array(self::ID_FROM_STORAGE),
             5 => array(self::ID_FROM_STORAGE),
-        ), $data[$this->fixtures['file1']['storageKey']]);
+        ), $data[$this->fixtures['file1']['path']]->getCoverage());
         $this->assertEquals(array(
             10 => array(self::ID_FROM_STORAGE),
             11 => array(self::ID_FROM_STORAGE),
             12 => array(self::ID_FROM_STORAGE),
             13 => array(self::ID_FROM_STORAGE),
             14 => array(self::ID_FROM_STORAGE),
-        ), $data[$this->fixtures['file2']['storageKey']]);
+        ), $data[$this->fixtures['file2']['path']]->getCoverage());
 
         return $coverageData;
     }
@@ -89,7 +89,7 @@ class CoverageDataTest extends TestCase
     public function testMerge(CoverageData $fromXDebug, CoverageData $fromStorage)
     {
         $fromStorage->merge($fromXDebug);
-        $data = $fromStorage->getData();
+        $data = $fromStorage->getFiles();
 
         $this->assertCount(2, $data);
         $this->assertEquals(array(
@@ -98,14 +98,14 @@ class CoverageDataTest extends TestCase
             3 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             4 => array(self::ID_FROM_STORAGE),
             5 => array(self::ID_FROM_STORAGE),
-        ), $data[$this->fixtures['file1']['storageKey']]);
+        ), $data[$this->fixtures['file1']['path']]->getCoverage());
         $this->assertEquals(array(
             10 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             11 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             12 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             13 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             14 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-        ), $data[$this->fixtures['file2']['storageKey']]);
+        ), $data[$this->fixtures['file2']['path']]->getCoverage());
 
         return $fromStorage;
     }
@@ -116,22 +116,22 @@ class CoverageDataTest extends TestCase
     public function testSave(CoverageData $coverageData)
     {
         $storage_mock = $this->getStorageMock();
-        $storage_mock->shouldReceive('set')->with($this->fixtures['file1']['storageKey'], array(
+        $storage_mock->shouldReceive('set')->with($this->fixtures['file1']['storageKey'], serialize(array(
             1 => array(self::ID_FROM_XDEBUG),
             2 => array(self::ID_FROM_XDEBUG),
             3 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             4 => array(self::ID_FROM_STORAGE),
             5 => array(self::ID_FROM_STORAGE),
-        ))->once();
-        $storage_mock->shouldReceive('set')->with($this->fixtures['file2']['storageKey'], array(
+        )))->once();
+        $storage_mock->shouldReceive('set')->with($this->fixtures['file2']['storageKey'], serialize(array(
             10 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             11 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             12 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             13 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
             14 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-        ))->once();
+        )))->once();
 
-        $coverageData->save($storage_mock);
+        $coverageData->save($storage_mock, $this->reposRootDir());
 
         return $coverageData;
     }
@@ -183,18 +183,18 @@ class CoverageDataTest extends TestCase
     {
         $storage = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storage->shouldReceive('getAll')->andReturn(array(
-            $this->fixtures['file1']['storageKey'] => array(
+            $this->fixtures['file1']['storageKey'] => serialize(array(
                 3 => array(self::ID_FROM_STORAGE),
                 4 => array(self::ID_FROM_STORAGE),
                 5 => array(self::ID_FROM_STORAGE),
-            ),
-            $this->fixtures['file2']['storageKey'] => array(
+            )),
+            $this->fixtures['file2']['storageKey'] => serialize(array(
                 10 => array(self::ID_FROM_STORAGE),
                 11 => array(self::ID_FROM_STORAGE),
                 12 => array(self::ID_FROM_STORAGE),
                 13 => array(self::ID_FROM_STORAGE),
                 14 => array(self::ID_FROM_STORAGE),
-            )
+            ))
         ));
 
         return $storage;

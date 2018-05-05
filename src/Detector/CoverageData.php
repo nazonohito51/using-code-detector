@@ -1,103 +1,82 @@
 <?php
 namespace CodeDetector\Detector;
 
+use CodeDetector\Detector\CoverageData\File;
 use CodeDetector\Detector\Storage\StorageInterface;
 use Webmozart\PathUtil\Path;
 
 class CoverageData implements \IteratorAggregate
 {
-    const STORAGE_KEY_PREFIX = 'CodeDetector';
+    private $files;
 
-    private $data;
-
-    private function __construct(array $data)
+    /**
+     * @param File[] $files
+     */
+    private function __construct(array $files)
     {
-        $this->data = $data;
+        $this->files = $files;
     }
 
-    public static function createFromStorage(StorageInterface $storage)
+    public static function createFromStorage(StorageInterface $storage, $rootDir)
     {
-        return new self($storage->getAll(self::STORAGE_KEY_PREFIX));
+        $files = File::createFromStorage($storage, $rootDir);
+        return new self($files);
     }
 
     public static function createFromXDebug(array $xdebugCoverageData, $rootDir, $id = null)
     {
-        $data = array();
+        $files = array();
 
-        foreach ($xdebugCoverageData as $file => $lines) {
-            $key = self::convertStorageKey($file, $rootDir);
+        foreach ($xdebugCoverageData as $path => $lines) {
+            $files[$path] = new File($path);
             foreach ($lines as $line => $execute) {
                 if ($execute == Driver::LINE_EXECUTED) {
-                    $data[$key][$line][] = $id;
+                    $files[$path]->append($id, $line);
                 }
             }
         }
 
-        return new self($data);
+        return new self($files);
     }
 
-    private static function convertStorageKey($path, $rootDir)
+    public function getFiles()
     {
-        $hash = hash_file('md5', $path);
-        $relativePath = Path::makeRelative($path, $rootDir);
-
-        return self::STORAGE_KEY_PREFIX . ":{$relativePath}:{$hash}";
-    }
-
-    public function getData()
-    {
-        return $this->data;
+        return $this->files;
     }
 
     public function merge(CoverageData $that)
     {
-        foreach ($that->getData() as $file => $lines) {
-            if (!isset($this->data[$file])) {
-                $this->data[$file] = array();
+        foreach ($that->getFiles() as $path => $file) {
+            // TODO: when path is equal, but hash is not equal
+            if (!isset($this->files[$path])) {
+                $this->files[$path] = clone $file;
+            } else {
+                $this->files[$path]->appendFile($file);
             }
-
-            foreach ($lines as $line => $ids) {
-                $this_ids = (isset($this->data[$file][$line]) && !empty($this->data[$file][$line])) ? $this->data[$file][$line] : array();
-                $this->data[$file][$line] = array_unique(array_merge($this_ids, $ids));
-            }
-
-            ksort($this->data[$file]);
         }
     }
 
-    public function save(StorageInterface $storage)
+    public function save(StorageInterface $storage, $rootDir)
     {
-        foreach ($this->getData() as $file => $lines) {
-            if (!empty($lines)) {
-                $storage->set($file, $lines);
-            }
+        foreach ($this->getFiles() as $path => $file) {
+            $file->save($storage, $rootDir);
         }
     }
 
     public function getPHP_CodeCoverageData($rootDir)
     {
         $result = array();
-        foreach ($this->getData() as $file => $lines) {
-            $result[$this->convertRealFilePath($file, $rootDir)] = $lines;
+        foreach ($this->getFiles() as $path => $file) {
+            if ($file->isExist()) {
+                $result[$file->getPath()] = $file->getCoverage();
+            }
         }
 
         return $result;
     }
 
-    private function convertRealFilePath($storageKey, $rootDir)
-    {
-        $rootDir = substr($rootDir, -1) == '/' ? $rootDir : $rootDir . '/';
-        if (preg_match('/^' . self::STORAGE_KEY_PREFIX . ':([^:]+):.*$/', $storageKey, $matches)) {
-            if (file_exists(Path::makeAbsolute($matches[1], $rootDir))) {
-                return Path::makeAbsolute($matches[1], $rootDir);
-            }
-        }
-
-        return null;
-    }
-
     public function getIterator()
     {
-        return new \ArrayIterator($this->data);
+        return new \ArrayIterator($this->files);
     }
 }
