@@ -93,4 +93,15 @@ class RedisStorage implements StorageInterface
             throw $exception;
         }
     }
+
+    public function del($key)
+    {
+        try {
+            return (bool)$this->driver()->del(array($key));
+        } catch (PredisException $e) {
+            $exception = new ConnectionException();
+            $exception->setDriverException($e);
+            throw $exception;
+        }
+    }
 }

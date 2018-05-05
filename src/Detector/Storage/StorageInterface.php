@@ -25,4 +25,10 @@ interface StorageInterface
      * @throws ConnectionException
      */
     public function set($key, $value);
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function del($key);
 }
