@@ -147,4 +147,15 @@ class FileTest extends TestCase
             14 => array(self::ID1),
         ), $files[$this->fixtures['file2']['path']]->getCoverage());
     }
+
+    public function testIsEqual()
+    {
+        $existRealFile = new File($this->fixtures['file1']['path'], array(1 => self::ID1));
+        $existRealFileHasHash = new File($this->fixtures['file1']['path'], array(1 => self::ID1), hash_file('md5', $this->fixtures['file1']['path']));
+        $existRealFileHasAnotherHash = new File($this->fixtures['file1']['path'], array(1 => self::ID1), md5('hoge'));
+
+        $this->assertTrue($existRealFile->isEqual($existRealFileHasHash));
+        $this->assertFalse($existRealFile->isEqual($existRealFileHasAnotherHash));
+        $this->assertFalse($existRealFileHasHash->isEqual($existRealFileHasAnotherHash));
+    }
 }

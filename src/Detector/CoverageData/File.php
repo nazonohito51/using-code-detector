@@ -59,6 +59,11 @@ class File
         return $this->path;
     }
 
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
     public function getCoverage()
     {
         return $this->coverage;
@@ -113,5 +118,10 @@ class File
         $relativePath = Path::makeRelative($this->path, $rootDir);
 
         return self::STORAGE_KEY_PREFIX . ":{$relativePath}:{$this->hash}";
+    }
+
+    public function isEqual(File $that)
+    {
+        return $this->getPath() == $that->getPath() && $this->getHash() == $that->getHash();
     }
 }
