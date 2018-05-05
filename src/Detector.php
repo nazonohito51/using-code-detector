@@ -35,8 +35,8 @@ class Detector
 
     public function stop()
     {
-        $data = CoverageData::createFromXDebug($this->driver->stop(), $this->dir, $this->id);
-        // TODO: filter by scope
+        $xDebugCoverage = $this->filterFiles($this->driver->stop());
+        $data = CoverageData::createFromXDebug($xDebugCoverage, $this->dir, $this->id);
         $storageData = CoverageData::createFromStorage($this->storage, $this->dir);
         $storageData->merge($data);
         $storageData->save($this->storage, $this->dir);
@@ -46,5 +46,18 @@ class Detector
     {
         $storageData = CoverageData::createFromStorage($this->storage, $this->dir);
         return $storageData->getPHP_CodeCoverageData($this->dir);
+    }
+
+    private function filterFiles(array $xDebugCoverage)
+    {
+        $pattern = '/' . preg_quote($this->dir, '/') . '/';
+
+        $ret = array();
+        foreach ($xDebugCoverage as $path => $coverage) {
+            if (preg_match($pattern, $path)) {
+                $ret[$path] = $coverage;
+            }
+        }
+        return $ret;
     }
 }
