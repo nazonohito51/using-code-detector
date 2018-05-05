@@ -13,10 +13,10 @@ class File
     private $coverage;
     private $hash;
 
-    public function __construct($path, array $coverageLines = array(), $hash = null)
+    public function __construct($path, array $coverage = array(), $hash = null)
     {
         $this->path = $path;
-        $this->coverage = $coverageLines;
+        $this->coverage = $coverage;
         $this->hash = $hash;
 
         if (is_null($this->hash)) {
@@ -100,15 +100,6 @@ class File
 
     public function save(StorageInterface $storage, $rootDir)
     {
-        $key=$this->storageKey($rootDir);
-        $value=serialize($this->getCoverage());
-        $expect=serialize(array(
-            1 => array('fromXDebug'),
-            2 => array('fromXDebug'),
-            3 => array('fromStorage', 'fromXDebug'),
-            4 => array('fromStorage'),
-            5 => array('fromStorage'),
-        ));
         $storage->set($this->storageKey($rootDir), serialize($this->getCoverage()));
     }
 

@@ -9,6 +9,12 @@ class FileTest extends TestCase
     const ID1 = 'fromXDebug';
     const ID2 = 'fromStorage';
 
+    public function tearDown()
+    {
+        parent::tearDown();
+        m::close();
+    }
+
     public function testIsExist()
     {
         $existRealFile = new File($this->fixtures['file1']['path'], array(1 => self::ID1));
