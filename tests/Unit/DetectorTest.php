@@ -31,48 +31,48 @@ class DetectorTest extends TestCase
                 ),
                 array(),
                 array(
-                    $this->fixtures['file1']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => serialize(array(
                         1 => array(self::ID1),
                         2 => array(self::ID1),
                         3 => array(self::ID1),
-                    ),
-                    $this->fixtures['file2']['storageKey'] => array(
+                    )),
+                    $this->fixtures['file2']['storageKey'] => serialize(array(
                         4 => array(self::ID1),
                         5 => array(self::ID1),
                         6 => array(self::ID1),
-                    ),
-                    $this->fixtures['file3']['storageKey'] => array(
-                    ),
+                    )),
+                    $this->fixtures['file3']['storageKey'] => serialize(array(
+                    )),
                 ),
             ),
             'only_storage' => array(
                 array(),
                 array(
-                    $this->fixtures['file1']['storageKey'] => array(),
-                    $this->fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => serialize(array()),
+                    $this->fixtures['file2']['storageKey'] => serialize(array(
                         6 => array(self::ID2),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
-                    ),
-                    $this->fixtures['file3']['storageKey'] => array(
+                    )),
+                    $this->fixtures['file3']['storageKey'] => serialize(array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
-                    ),
+                    )),
                 ),
                 array(
-                    $this->fixtures['file1']['storageKey'] => array(
-                    ),
-                    $this->fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => serialize(array(
+                    )),
+                    $this->fixtures['file2']['storageKey'] => serialize(array(
                         6 => array(self::ID2),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
-                    ),
-                    $this->fixtures['file3']['storageKey'] => array(
+                    )),
+                    $this->fixtures['file3']['storageKey'] => serialize(array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
-                    ),
+                    )),
                 ),
             ),
             'both' => array(
@@ -89,36 +89,36 @@ class DetectorTest extends TestCase
                     )
                 ),
                 array(
-                    $this->fixtures['file1']['storageKey'] => array(),
-                    $this->fixtures['file2']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => serialize(array()),
+                    $this->fixtures['file2']['storageKey'] => serialize(array(
                         6 => array(self::ID2),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
-                    ),
-                    $this->fixtures['file3']['storageKey'] => array(
+                    )),
+                    $this->fixtures['file3']['storageKey'] => serialize(array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
-                    ),
+                    )),
                 ),
                 array(
-                    $this->fixtures['file1']['storageKey'] => array(
+                    $this->fixtures['file1']['storageKey'] => serialize(array(
                         1 => array(self::ID1),
                         2 => array(self::ID1),
                         3 => array(self::ID1),
-                    ),
-                    $this->fixtures['file2']['storageKey'] => array(
+                    )),
+                    $this->fixtures['file2']['storageKey'] => serialize(array(
                         4 => array(self::ID1),
                         5 => array(self::ID1),
                         6 => array(self::ID2, self::ID1),
                         7 => array(self::ID2),
                         8 => array(self::ID2),
-                    ),
-                    $this->fixtures['file3']['storageKey'] => array(
+                    )),
+                    $this->fixtures['file3']['storageKey'] => serialize(array(
                         10 => array(self::ID2),
                         11 => array(self::ID2),
                         12 => array(self::ID2),
-                    ),
+                    )),
                 ),
             )
         );
@@ -150,26 +150,26 @@ class DetectorTest extends TestCase
 
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn(array(
-            $this->fixtures['file1']['storageKey'] => array(
+            $this->fixtures['file1']['storageKey'] => serialize(array(
                 1 => array(self::ID1),
                 2 => array(self::ID1),
                 3 => array(self::ID1),
-            ),
-            $this->fixtures['file2']['storageKey'] => array(
+            )),
+            $this->fixtures['file2']['storageKey'] => serialize(array(
                 4 => array(self::ID1),
                 5 => array(self::ID1),
                 6 => array(self::ID2, self::ID1),
                 7 => array(self::ID2),
                 8 => array(self::ID2),
-            ),
-            $this->fixtures['file3']['storageKey'] => array(
+            )),
+            $this->fixtures['file3']['storageKey'] => serialize(array(
                 10 => array(self::ID2),
                 11 => array(self::ID2),
                 12 => array(self::ID2),
-            ),
-            'not_exist_file' => array(
+            )),
+            'not:exist:file' => serialize(array(
                 1 => array(self::ID1),
-            ),
+            )),
         ));
 
         $detector = new Detector($this->reposRootDir(), $driverMock, $storageMock);

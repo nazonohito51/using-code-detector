@@ -39,9 +39,9 @@ class Detector
     {
         $data = CoverageData::createFromXDebug($this->driver->stop(), $this->dir, $this->id);
         // TODO: filter by scope
-        $storageData = CoverageData::createFromStorage($this->storage);
+        $storageData = CoverageData::createFromStorage($this->storage, $this->dir);
         $storageData->merge($data);
-        $storageData->save($this->storage);
+        $storageData->save($this->storage, $this->dir);
 
 //        foreach ($coverageData as $file => $lines) {
 //            // TODO: convert file path
@@ -63,7 +63,7 @@ class Detector
 
     public function getData()
     {
-        $storageData = CoverageData::createFromStorage($this->storage);
+        $storageData = CoverageData::createFromStorage($this->storage, $this->dir);
         return $storageData->getPHP_CodeCoverageData($this->dir);
     }
 
