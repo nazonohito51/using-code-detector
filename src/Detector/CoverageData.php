@@ -23,7 +23,7 @@ class CoverageData implements \IteratorAggregate
         return new self($files);
     }
 
-    public static function createFromXDebug(array $xdebugCoverageData, $rootDir, $id = null)
+    public static function createFromXDebug(array $xdebugCoverageData, $id = null)
     {
         $files = array();
 
@@ -63,7 +63,7 @@ class CoverageData implements \IteratorAggregate
         }
     }
 
-    public function getPHP_CodeCoverageData($rootDir)
+    public function getPHP_CodeCoverageData()
     {
         $result = array();
         foreach ($this->getFiles() as $path => $file) {

@@ -17,7 +17,7 @@ class CoverageDataTest extends TestCase
 
     public function testIterativeAccess()
     {
-        $coverageData = CoverageData::createFromXDebug($this->getXDebugCoverageDataMock(), $this->reposRootDir(), self::ID_FROM_XDEBUG);
+        $coverageData = CoverageData::createFromXDebug($this->getXDebugCoverageDataMock(), self::ID_FROM_XDEBUG);
 
         $data = array();
         foreach ($coverageData as $file => $lines) {
@@ -41,7 +41,7 @@ class CoverageDataTest extends TestCase
 
     public function testCreateFromXDebug()
     {
-        $coverageData = CoverageData::createFromXDebug($this->getXDebugCoverageDataMock(), $this->reposRootDir(), self::ID_FROM_XDEBUG);
+        $coverageData = CoverageData::createFromXDebug($this->getXDebugCoverageDataMock(), self::ID_FROM_XDEBUG);
         $data = $coverageData->getFiles();
 
         $this->assertCount(2, $data);
@@ -142,7 +142,7 @@ class CoverageDataTest extends TestCase
      */
     public function testGetPHP_CodeCoverageData(CoverageData $coverageData)
     {
-        $data = $coverageData->getPHP_CodeCoverageData($this->reposRootDir());
+        $data = $coverageData->getPHP_CodeCoverageData();
 
         $this->assertEquals(array(
             $this->fixtures['file1']['path'] => array(
