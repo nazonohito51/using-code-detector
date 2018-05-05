@@ -53,10 +53,9 @@ class CoverageData implements \IteratorAggregate
     public function merge(CoverageData $that)
     {
         foreach ($that->getFiles() as $path => $file) {
-            // TODO: when path is equal, but hash is not equal
             if (!isset($this->files[$path])) {
                 $this->files[$path] = clone $file;
-            } else {
+            } elseif ($this->files[$path]->isEqual($file)) {
                 $this->files[$path]->appendFile($file);
             }
         }
