@@ -1,6 +1,7 @@
 <?php
 namespace CodeDetector;
 
+use CodeDetector\Detector\CoverageData\File;
 use Mockery as m;
 
 class DetectorTest extends TestCase
@@ -168,10 +169,11 @@ class DetectorTest extends TestCase
                 11 => array(self::ID2),
                 12 => array(self::ID2),
             )),
-            'not:exist:file' => serialize(array(
+            File::STORAGE_KEY_PREFIX . ':not_exist:file' => serialize(array(
                 1 => array(self::ID1),
             )),
         ));
+        $storageMock->shouldReceive('del')->with(File::STORAGE_KEY_PREFIX . ':not_exist:file')->andReturn(true);
 
         $detector = new Detector($this->reposRootDir(), $driverMock, $storageMock);
         $data = $detector->getData();

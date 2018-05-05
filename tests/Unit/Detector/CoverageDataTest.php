@@ -64,7 +64,9 @@ class CoverageDataTest extends TestCase
 
     public function testCreateFromStorage()
     {
-        $coverageData = CoverageData::createFromStorage($this->getStorageMock(), $this->reposRootDir());
+        $storageMock = $this->getStorageMock();
+        $storageMock->shouldReceive('del')->with(File::STORAGE_KEY_PREFIX . ':not_exist:file')->andReturn(true);
+        $coverageData = CoverageData::createFromStorage($storageMock, $this->reposRootDir());
         $data = $coverageData->getFiles();
 
         $this->assertCount(2, $data);

@@ -22,6 +22,7 @@ class CoverageData implements \IteratorAggregate
         $files = File::buildCollectionFromStorage($storage, $rootDir);
         foreach ($files as $path => $file) {
             if (!$file->isExist()) {
+                $file->delete($storage, $rootDir);
                 unset($files[$path]);
             }
         }

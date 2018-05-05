@@ -103,6 +103,11 @@ class File
         $storage->set($this->storageKey($rootDir), serialize($this->getCoverage()));
     }
 
+    public function delete(StorageInterface $storage, $rootDir)
+    {
+        $storage->del($this->storageKey($rootDir));
+    }
+
     private function storageKey($rootDir)
     {
         $relativePath = Path::makeRelative($this->path, $rootDir);
