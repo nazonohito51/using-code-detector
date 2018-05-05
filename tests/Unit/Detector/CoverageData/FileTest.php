@@ -18,9 +18,11 @@ class FileTest extends TestCase
     public function testIsExist()
     {
         $existRealFile = new File($this->fixtures['file1']['path'], array(1 => self::ID1));
+        $existRealFileHasHash = new File($this->fixtures['file1']['path'], array(1 => self::ID1), hash_file('md5', $this->fixtures['file1']['path']));
         $notExistFile = new File($this->fixtures['file1']['path'], array(1 => self::ID1), md5('hoge'));
 
         $this->assertTrue($existRealFile->isExist());
+        $this->assertTrue($existRealFileHasHash->isExist());
         $this->assertFalse($notExistFile->isExist());
     }
 
