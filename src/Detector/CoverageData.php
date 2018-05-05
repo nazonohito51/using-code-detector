@@ -19,7 +19,7 @@ class CoverageData implements \IteratorAggregate
 
     public static function createFromStorage(StorageInterface $storage, $rootDir)
     {
-        $files = File::createFromStorage($storage, $rootDir);
+        $files = File::buildCollectionFromStorage($storage, $rootDir);
         return new self($files);
     }
 

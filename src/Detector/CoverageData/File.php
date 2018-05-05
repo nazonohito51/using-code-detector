@@ -33,7 +33,7 @@ class File
      * @param string $rootDir
      * @return File[]
      */
-    public static function createFromStorage(StorageInterface $storage, $rootDir)
+    public static function buildCollectionFromStorage(StorageInterface $storage, $rootDir)
     {
         $files = array();
 

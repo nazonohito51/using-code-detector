@@ -110,7 +110,7 @@ class FileTest extends TestCase
         $file->save($storageMock, $this->reposRootDir());
     }
 
-    public function testCreateFromStorage()
+    public function testBuildCollectionFromStorage()
     {
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn(array(
@@ -128,7 +128,7 @@ class FileTest extends TestCase
             ))
         ));
 
-        $files = File::createFromStorage($storageMock, $this->reposRootDir());
+        $files = File::buildCollectionFromStorage($storageMock, $this->reposRootDir());
 
         $this->assertArrayHasKey($this->fixtures['file1']['path'], $files);
         $this->assertEquals(array(
