@@ -1,6 +1,6 @@
 {
-  "name": "nazonohito51/unused-code-detector",
-  "description": "Detect line that is not executed in php code.",
+  "name": "nazonohito51/using-code-detector",
+  "description": "Detect line that is executed.",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -21,7 +21,6 @@
     "php": ">=5.3.3",
     "ext-xdebug": ">=2.2.0",
     "phpunit/php-code-coverage": "~2",
-    "predis/predis": "~1",
     "webmozart/path-util": "^2.3"
   },
   "require-dev": {
@@ -30,10 +29,5 @@
   },
   "suggest": {
     "predis/predis": "You can use the RedisStorage class instead of implementing StorageInterface yourself."
-  },
-  "config": {
-    "platform": {
-      "php": "5.3.3"
-    }
   }
 }
