@@ -8,8 +8,6 @@ use CodeDetector\Exceptions\InvalidFilePathException;
 
 class Detector
 {
-    const STORAGE_KEY_PREFIX = 'CodeDetector';
-
     private $dir;
     private $driver;
     private $storage;
