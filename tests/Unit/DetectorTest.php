@@ -34,14 +34,20 @@ class DetectorTest extends TestCase
                 array(),
                 array(
                     $this->fixtures['file1']['storageKey'] => serialize(array(
-                        1 => array(self::ID1),
-                        2 => array(self::ID1),
-                        3 => array(self::ID1),
+                        'coverage' => array(
+                            1 => array(self::ID1),
+                            2 => array(self::ID1),
+                            3 => array(self::ID1),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file2']['storageKey'] => serialize(array(
-                        4 => array(self::ID1),
-                        5 => array(self::ID1),
-                        6 => array(self::ID1),
+                        'coverage' => array(
+                            4 => array(self::ID1),
+                            5 => array(self::ID1),
+                            6 => array(self::ID1),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file3']['storageKey'] => serialize(array(
                     )),
@@ -52,28 +58,40 @@ class DetectorTest extends TestCase
                 array(
                     $this->fixtures['file1']['storageKey'] => serialize(array()),
                     $this->fixtures['file2']['storageKey'] => serialize(array(
-                        6 => array(self::ID2),
-                        7 => array(self::ID2),
-                        8 => array(self::ID2),
+                        'coverage' => array(
+                            6 => array(self::ID2),
+                            7 => array(self::ID2),
+                            8 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file3']['storageKey'] => serialize(array(
-                        10 => array(self::ID2),
-                        11 => array(self::ID2),
-                        12 => array(self::ID2),
+                        'coverage' => array(
+                            10 => array(self::ID2),
+                            11 => array(self::ID2),
+                            12 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                 ),
                 array(
                     $this->fixtures['file1']['storageKey'] => serialize(array(
                     )),
                     $this->fixtures['file2']['storageKey'] => serialize(array(
-                        6 => array(self::ID2),
-                        7 => array(self::ID2),
-                        8 => array(self::ID2),
+                        'coverage' => array(
+                            6 => array(self::ID2),
+                            7 => array(self::ID2),
+                            8 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file3']['storageKey'] => serialize(array(
-                        10 => array(self::ID2),
-                        11 => array(self::ID2),
-                        12 => array(self::ID2),
+                        'coverage' => array(
+                            10 => array(self::ID2),
+                            11 => array(self::ID2),
+                            12 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                 ),
             ),
@@ -93,33 +111,48 @@ class DetectorTest extends TestCase
                 array(
                     $this->fixtures['file1']['storageKey'] => serialize(array()),
                     $this->fixtures['file2']['storageKey'] => serialize(array(
-                        6 => array(self::ID2),
-                        7 => array(self::ID2),
-                        8 => array(self::ID2),
+                        'coverage' => array(
+                            6 => array(self::ID2),
+                            7 => array(self::ID2),
+                            8 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file3']['storageKey'] => serialize(array(
-                        10 => array(self::ID2),
-                        11 => array(self::ID2),
-                        12 => array(self::ID2),
+                        'coverage' => array(
+                            10 => array(self::ID2),
+                            11 => array(self::ID2),
+                            12 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                 ),
                 array(
                     $this->fixtures['file1']['storageKey'] => serialize(array(
-                        1 => array(self::ID1),
-                        2 => array(self::ID1),
-                        3 => array(self::ID1),
+                        'coverage' => array(
+                            1 => array(self::ID1),
+                            2 => array(self::ID1),
+                            3 => array(self::ID1),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file2']['storageKey'] => serialize(array(
-                        4 => array(self::ID1),
-                        5 => array(self::ID1),
-                        6 => array(self::ID2, self::ID1),
-                        7 => array(self::ID2),
-                        8 => array(self::ID2),
+                        'coverage' => array(
+                            4 => array(self::ID1),
+                            5 => array(self::ID1),
+                            6 => array(self::ID2, self::ID1),
+                            7 => array(self::ID2),
+                            8 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                     $this->fixtures['file3']['storageKey'] => serialize(array(
-                        10 => array(self::ID2),
-                        11 => array(self::ID2),
-                        12 => array(self::ID2),
+                        'coverage' => array(
+                            10 => array(self::ID2),
+                            11 => array(self::ID2),
+                            12 => array(self::ID2),
+                        ),
+                        'sample' => 1
                     )),
                 ),
             )
@@ -153,24 +186,36 @@ class DetectorTest extends TestCase
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn(array(
             $this->fixtures['file1']['storageKey'] => serialize(array(
-                1 => array(self::ID1),
-                2 => array(self::ID1),
-                3 => array(self::ID1),
+                'coverage' => array(
+                    1 => array(self::ID1),
+                    2 => array(self::ID1),
+                    3 => array(self::ID1),
+                ),
+                'sample' => 1
             )),
             $this->fixtures['file2']['storageKey'] => serialize(array(
-                4 => array(self::ID1),
-                5 => array(self::ID1),
-                6 => array(self::ID2, self::ID1),
-                7 => array(self::ID2),
-                8 => array(self::ID2),
+                'coverage' => array(
+                    4 => array(self::ID1),
+                    5 => array(self::ID1),
+                    6 => array(self::ID2, self::ID1),
+                    7 => array(self::ID2),
+                    8 => array(self::ID2),
+                ),
+                'sample' => 1
             )),
             $this->fixtures['file3']['storageKey'] => serialize(array(
-                10 => array(self::ID2),
-                11 => array(self::ID2),
-                12 => array(self::ID2),
+                'coverage' => array(
+                    10 => array(self::ID2),
+                    11 => array(self::ID2),
+                    12 => array(self::ID2),
+                ),
+                'sample' => 1
             )),
             File::STORAGE_KEY_PREFIX . ':not_exist:file' => serialize(array(
-                1 => array(self::ID1),
+                'coverage' => array(
+                    1 => array(self::ID1),
+                ),
+                'sample' => 1
             )),
         ));
         $storageMock->shouldReceive('del')->with(File::STORAGE_KEY_PREFIX . ':not_exist:file')->andReturn(true);

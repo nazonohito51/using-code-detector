@@ -12,12 +12,14 @@ class File
     private $path;
     private $coverage;
     private $hash;
+    private $sample;
 
-    public function __construct($path, array $coverage = array(), $hash = null)
+    public function __construct($path, array $coverage = array(), $hash = null, $sample = 1)
     {
         $this->path = $path;
         $this->coverage = $coverage;
         $this->hash = $hash;
+        $this->sample = (int)$sample;
 
         if (is_null($this->hash)) {
             if (!file_exists($path)) {
@@ -38,12 +40,17 @@ class File
         $files = array();
 
         $data = $storage->getAll(self::STORAGE_KEY_PREFIX);
-        foreach ($data as $storageKey => $serializedCoverage) {
+        foreach ($data as $storageKey => $serializedValue) {
             list($prefix, $path, $hash) = explode(':', $storageKey);
-            $coverage = unserialize($serializedCoverage);
+            $unserializedValue = unserialize($serializedValue);
+            if (!isset($unserializedValue['coverage']) || !isset($unserializedValue['sample'])) {
+                continue;
+            }
+            $coverage = $unserializedValue['coverage'];
+            $sample = $unserializedValue['sample'];
 
             $realPath = Path::join($rootDir, $path);
-            $files[$realPath] = new self($realPath, $coverage, $hash);
+            $files[$realPath] = new self($realPath, $coverage, $hash, $sample);
         }
 
         return $files;
@@ -105,7 +112,10 @@ class File
 
     public function save(StorageInterface $storage, $rootDir)
     {
-        $storage->set($this->storageKey($rootDir), serialize($this->getCoverage()));
+        $storage->set($this->storageKey($rootDir), serialize(array(
+            'coverage' => $this->getCoverage(),
+            'sample' => $this->sample
+        )));
     }
 
     public function delete(StorageInterface $storage, $rootDir)

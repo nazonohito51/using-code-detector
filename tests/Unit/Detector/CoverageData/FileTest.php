@@ -98,9 +98,12 @@ class FileTest extends TestCase
     {
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('set')->with($this->fixtures['file1']['storageKey'], serialize(array(
-            1 => array(self::ID1),
-            2 => array(self::ID1),
-            3 => array(self::ID1),
+            'coverage' => array(
+                1 => array(self::ID1),
+                2 => array(self::ID1),
+                3 => array(self::ID1),
+            ),
+            'sample' => 1
         )))->once();
 
         $file = new File($this->fixtures['file1']['path'], array(
@@ -117,16 +120,22 @@ class FileTest extends TestCase
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storageMock->shouldReceive('getAll')->andReturn(array(
             $this->fixtures['file1']['storageKey'] => serialize(array(
-                3 => array(self::ID1),
-                4 => array(self::ID1),
-                5 => array(self::ID1),
+                'coverage' => array(
+                    3 => array(self::ID1),
+                    4 => array(self::ID1),
+                    5 => array(self::ID1),
+                ),
+                'sample' => 1
             )),
             $this->fixtures['file2']['storageKey'] => serialize(array(
-                10 => array(self::ID1),
-                11 => array(self::ID1),
-                12 => array(self::ID1),
-                13 => array(self::ID1),
-                14 => array(self::ID1),
+                'coverage' => array(
+                    10 => array(self::ID1),
+                    11 => array(self::ID1),
+                    12 => array(self::ID1),
+                    13 => array(self::ID1),
+                    14 => array(self::ID1),
+                ),
+                'sample' => 1
             ))
         ));
 

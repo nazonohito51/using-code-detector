@@ -121,18 +121,24 @@ class CoverageDataTest extends TestCase
     {
         $storage_mock = $this->getStorageMock();
         $storage_mock->shouldReceive('set')->with($this->fixtures['file1']['storageKey'], serialize(array(
-            1 => array(self::ID_FROM_XDEBUG),
-            2 => array(self::ID_FROM_XDEBUG),
-            3 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-            4 => array(self::ID_FROM_STORAGE),
-            5 => array(self::ID_FROM_STORAGE),
+            'coverage' => array(
+                1 => array(self::ID_FROM_XDEBUG),
+                2 => array(self::ID_FROM_XDEBUG),
+                3 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                4 => array(self::ID_FROM_STORAGE),
+                5 => array(self::ID_FROM_STORAGE),
+            ),
+            'sample' => 1
         )))->once();
         $storage_mock->shouldReceive('set')->with($this->fixtures['file2']['storageKey'], serialize(array(
-            10 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-            11 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-            12 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-            13 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-            14 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+            'coverage' => array(
+                10 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                11 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                12 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                13 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                14 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+            ),
+            'sample' => 1
         )))->once();
 
         $coverageData->save($storage_mock, $this->reposRootDir());
@@ -188,19 +194,28 @@ class CoverageDataTest extends TestCase
         $storage = m::mock('CodeDetector\Detector\Storage\StorageInterface');
         $storage->shouldReceive('getAll')->andReturn(array(
             $this->fixtures['file1']['storageKey'] => serialize(array(
-                3 => array(self::ID_FROM_STORAGE),
-                4 => array(self::ID_FROM_STORAGE),
-                5 => array(self::ID_FROM_STORAGE),
+                'coverage' => array(
+                    3 => array(self::ID_FROM_STORAGE),
+                    4 => array(self::ID_FROM_STORAGE),
+                    5 => array(self::ID_FROM_STORAGE),
+                ),
+                'sample' => 1
             )),
             $this->fixtures['file2']['storageKey'] => serialize(array(
-                10 => array(self::ID_FROM_STORAGE),
-                11 => array(self::ID_FROM_STORAGE),
-                12 => array(self::ID_FROM_STORAGE),
-                13 => array(self::ID_FROM_STORAGE),
-                14 => array(self::ID_FROM_STORAGE),
+                'coverage' => array(
+                    10 => array(self::ID_FROM_STORAGE),
+                    11 => array(self::ID_FROM_STORAGE),
+                    12 => array(self::ID_FROM_STORAGE),
+                    13 => array(self::ID_FROM_STORAGE),
+                    14 => array(self::ID_FROM_STORAGE),
+                ),
+                'sample' => 1
             )),
             File::STORAGE_KEY_PREFIX . ':not_exist:file' => serialize(array(
-                1 => array(self::ID_FROM_STORAGE),
+                'coverage' => array(
+                    1 => array(self::ID_FROM_STORAGE),
+                ),
+                'sample' => 1
             )),
         ));
 
