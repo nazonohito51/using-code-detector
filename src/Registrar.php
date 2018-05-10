@@ -32,13 +32,13 @@ class Registrar
         }
     }
 
-    public static function registerDefault($scope, StorageInterface $storage)
+    public static function registerDefault($scope, StorageInterface $storage, $id = null)
     {
         if (!is_dir($scope)) {
             throw new InvalidFilePathException();
         }
         $detector = new Detector($scope, self::createDefaultDriver(), $storage);
-        self::register($detector);
+        self::register($detector, $id);
     }
 
     public static function shutdown()
