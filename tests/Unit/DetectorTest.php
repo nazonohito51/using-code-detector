@@ -182,19 +182,22 @@ class DetectorTest extends TestCase
             1 => array(self::ID1),
             2 => array(self::ID1),
             3 => array(self::ID1),
-        ), $data[$this->fixtures['file1']['path']]);
+        ), $data['data'][$this->fixtures['file1']['path']]);
         $this->assertEquals(array(
             4 => array(self::ID1),
             5 => array(self::ID1),
             6 => array(self::ID2, self::ID1),
             7 => array(self::ID2),
             8 => array(self::ID2),
-        ), $data[$this->fixtures['file2']['path']]);
+        ), $data['data'][$this->fixtures['file2']['path']]);
         $this->assertEquals(array(
             10 => array(self::ID2),
             11 => array(self::ID2),
             12 => array(self::ID2),
-        ), $data[$this->fixtures['file3']['path']]);
+        ), $data['data'][$this->fixtures['file3']['path']]);
         $this->assertArrayNotHasKey('not_exist_file', $data);
+        $this->assertCount(2, $data['tests']);
+        $this->assertTrue(in_array(self::ID1, $data['tests']));
+        $this->assertTrue(in_array(self::ID2, $data['tests']));
     }
 }

@@ -148,20 +148,25 @@ class CoverageDataTest extends TestCase
         $data = $coverageData->getPHP_CodeCoverageData();
 
         $this->assertEquals(array(
-            $this->fixtures['file1']['path'] => array(
-                1 => array(self::ID_FROM_XDEBUG),
-                2 => array(self::ID_FROM_XDEBUG),
-                3 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-                4 => array(self::ID_FROM_STORAGE),
-                5 => array(self::ID_FROM_STORAGE),
+            'data' => array(
+                $this->fixtures['file1']['path'] => array(
+                    1 => array(self::ID_FROM_XDEBUG),
+                    2 => array(self::ID_FROM_XDEBUG),
+                    3 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                    4 => array(self::ID_FROM_STORAGE),
+                    5 => array(self::ID_FROM_STORAGE),
+                ),
+                $this->fixtures['file2']['path'] => array(
+                    10 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                    11 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                    12 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                    13 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                    14 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
+                ),
             ),
-            $this->fixtures['file2']['path'] => array(
-                10 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-                11 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-                12 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-                13 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-                14 => array(self::ID_FROM_STORAGE, self::ID_FROM_XDEBUG),
-            ),
+            'tests' => array(
+                self::ID_FROM_XDEBUG, self::ID_FROM_STORAGE
+            )
         ), $data);
     }
 

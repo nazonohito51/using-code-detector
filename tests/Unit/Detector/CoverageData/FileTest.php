@@ -96,18 +96,6 @@ class FileTest extends TestCase
         return $file;
     }
 
-    /**
-     * @depends testAppendFile
-     */
-    public function testGetIds(File $file)
-    {
-        $ids = $file->getIds();
-
-        $this->assertCount(2, $ids);
-        $this->assertTrue(in_array(self::ID1, $ids));
-        $this->assertTrue(in_array(self::ID2, $ids));
-    }
-
     public function testSave()
     {
         $storageMock = m::mock('CodeDetector\Detector\Storage\StorageInterface');

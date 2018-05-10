@@ -70,10 +70,22 @@ class CoverageData implements \IteratorAggregate
 
     public function getPHP_CodeCoverageData()
     {
-        $result = array();
+        $result = array(
+            'data' => array(),
+            'tests' => array()
+        );
         foreach ($this->getFiles() as $path => $file) {
             if ($file->isExist()) {
-                $result[$file->getPath()] = $file->getCoverage();
+                $coverage = $file->getCoverage();
+                $result['data'][$file->getPath()] = $coverage;
+
+                foreach ($coverage as $line => $ids) {
+                    foreach ($ids as $id) {
+                        if (!in_array($id, $result['tests'])) {
+                            $result['tests'][] = $id;
+                        }
+                    }
+                 }
             }
         }
 
