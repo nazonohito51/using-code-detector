@@ -65,8 +65,10 @@ class Registrar
         $coverage->setData($php_CodeCoverageData['data']);
         $coverage->setTests($php_CodeCoverageData['tests']);
 
-        $writer = new \PHP_CodeCoverage_Report_HTML();
-        $writer->process($coverage, $destPath);
+        $reporter = new Reporter();
+        $reporter->process($coverage, $destPath);
+//        $writer = new \PHP_CodeCoverage_Report_HTML();
+//        $writer->process($coverage, $destPath);
     }
 
     public static function clear($scope, StorageInterface $storage)
