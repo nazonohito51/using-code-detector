@@ -68,6 +68,15 @@ class Registrar
         $writer->process($coverage, $destPath);
     }
 
+    public static function clear($scope, StorageInterface $storage)
+    {
+        if (!is_dir($scope)) {
+            throw new InvalidFilePathException();
+        }
+        $detector = new Detector($scope, self::createDefaultDriver(), $storage);
+        $detector->clearData();
+    }
+
     private static function createDefaultDriver()
     {
         return new Driver();

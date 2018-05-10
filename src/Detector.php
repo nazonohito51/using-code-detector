@@ -46,6 +46,14 @@ class Detector
         return $storageData->getPHP_CodeCoverageData();
     }
 
+    public function clearData()
+    {
+        $storageData = CoverageData::createFromStorage($this->storage, $this->dir);
+        foreach ($storageData as $path => $file) {
+            $file->delete($this->storage, $this->dir);
+        }
+    }
+
     private function filterFiles(array $xDebugCoverage)
     {
         $pattern = '/' . preg_quote($this->dir, '/') . '/';
