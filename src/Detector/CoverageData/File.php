@@ -69,6 +69,16 @@ class File
         return $this->coverage;
     }
 
+    public function getIds()
+    {
+        $ret = array();
+        foreach ($this->getCoverage() as $line => $ids) {
+            $ret = array_unique(array_merge($ret, $ids));
+        }
+
+        return $ret;
+    }
+
     public function append($id, $coverageLines)
     {
         if (!is_array($coverageLines)) {

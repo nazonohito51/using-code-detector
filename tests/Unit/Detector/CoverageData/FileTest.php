@@ -92,6 +92,20 @@ class FileTest extends TestCase
             6 => array(self::ID2),
             7 => array(self::ID2),
         ), $file->getCoverage());
+
+        return $file;
+    }
+
+    /**
+     * @depends testAppendFile
+     */
+    public function testGetIds(File $file)
+    {
+        $ids = $file->getIds();
+
+        $this->assertCount(2, $ids);
+        $this->assertTrue(in_array(self::ID1, $ids));
+        $this->assertTrue(in_array(self::ID2, $ids));
     }
 
     public function testSave()
