@@ -81,8 +81,8 @@ class CoverageData implements \IteratorAggregate
 
                 foreach ($coverage as $line => $ids) {
                     foreach ($ids as $id) {
-                        if (!in_array($id, $result['tests'])) {
-                            $result['tests'][] = $id;
+                        if (!isset($result['tests'][$id])) {
+                            $result['tests'][$id] = array('size' => 'unknown', 'status' => null);
                         }
                     }
                  }
