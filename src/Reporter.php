@@ -47,7 +47,7 @@ class Reporter
         $this->lowUpperBound  = $lowUpperBound;
 
         $this->templatePath = sprintf(
-            '%s%Report%sTemplate%s',
+            '%s%sReport%sTemplate%s',
             dirname(__FILE__),
             DIRECTORY_SEPARATOR,
             DIRECTORY_SEPARATOR,
