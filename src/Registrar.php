@@ -62,7 +62,8 @@ class Registrar
         $php_CodeCoverageData = $detector->getData();
 
         $coverage = new \PHP_CodeCoverage();
-        $coverage->setData($php_CodeCoverageData);
+        $coverage->setData($php_CodeCoverageData['data']);
+        $coverage->setTests($php_CodeCoverageData['tests']);
 
         $writer = new \PHP_CodeCoverage_Report_HTML();
         $writer->process($coverage, $destPath);
