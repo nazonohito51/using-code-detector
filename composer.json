@@ -20,7 +20,7 @@
   "require": {
     "php": ">=5.3.3",
     "ext-xdebug": ">=2.2.0",
-    "phpunit/php-code-coverage": "~2",
+    "phpunit/php-code-coverage": ">=2",
     "webmozart/path-util": "^2.3"
   },
   "require-dev": {
